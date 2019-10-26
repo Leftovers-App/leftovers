@@ -12,6 +12,7 @@
   "dependencies": {
     "react": "16.9.0",
     "react-native": "0.61.2",
+    "react-native-action-button": "^2.8.5",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-maps": "0.26.1",
     "react-navigation": "^4.0.10",

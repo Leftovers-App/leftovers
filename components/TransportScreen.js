@@ -7,6 +7,7 @@ import {
     View,
     Button
 } from 'react-native';
+import ActionButton from 'react-native-action-button';
 
 const styles = StyleSheet.create({
     container: {
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     },
     map: {
         ...StyleSheet.absoluteFillObject,
-    },
+    }
 });
 
 class TransportScreen extends React.Component {
@@ -40,10 +41,9 @@ class TransportScreen extends React.Component {
                     }}
                 >
                 </MapView>
-                <Button
-                    title="Transport Secondary"
-                    onPress={() => navigate('Transport2')}
-                />
+                <ActionButton buttonColor="rgba(231,76,60,1)"
+                    onPress={() => navigate('Transport2')}>
+                </ActionButton>
             </View>
         );
     }
