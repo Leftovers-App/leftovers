@@ -7,22 +7,18 @@ import {
     Button
 } from 'react-native';
 
-class SenderScreen extends React.Component {
+class SenderScreenSecondary extends React.Component {
     static navigationOptions = {
-        title: 'Sender',
+        title: 'Sender2',
     };
     render() {
         const { navigate } = this.props.navigation;
         return (
             <View>
-                <Text>This is the sender screen.</Text>
-                <Button
-                    title="Sender Secondary"
-                    onPress={() => navigate('Sender2')}
-                />
+                <Text>This is the Secondary Sender screen.</Text>
             </View>
         );
     }
 }
 
-export default SenderScreen;
+export default SenderScreenSecondary;

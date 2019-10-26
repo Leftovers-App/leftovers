@@ -40,6 +40,10 @@ class TransportScreen extends React.Component {
                     }}
                 >
                 </MapView>
+                <Button
+                    title="Transport Secondary"
+                    onPress={() => navigate('Transport2')}
+                />
             </View>
         );
     }

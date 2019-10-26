@@ -16,6 +16,10 @@ class ReceiverScreen extends React.Component {
         return (
             <View>
                 <Text>This is the Receiver screen.</Text>
+                <Button
+                    title="Receiver Second"
+                    onPress={() => navigate('Receiver2')}
+                />
             </View>
         );
     }
