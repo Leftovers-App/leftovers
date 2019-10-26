@@ -12,8 +12,6 @@ import ActionButton from 'react-native-action-button';
 const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
-        height: 400,
-        width: 400,
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
@@ -41,8 +39,7 @@ class TransportScreen extends React.Component {
                     }}
                 >
                 </MapView>
-                <ActionButton buttonColor="rgba(231,76,60,1)"
-                    onPress={() => navigate('Transport2')}>
+                <ActionButton buttonColor="rgba(231,76,60,1)" position="right" onPress={() => navigate('Transport2')}>
                 </ActionButton>
             </View>
         );
