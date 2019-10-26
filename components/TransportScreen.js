@@ -7,19 +7,18 @@ import {
     Button
 } from 'react-native';
 
-class ProfileScreen extends React.Component {
+class TransportScreen extends React.Component {
     static navigationOptions = {
-        title: 'Profile',
+        title: 'Transport',
     };
     render() {
         const { navigate } = this.props.navigation;
         return (
-            <Button
-                title="Go Home"
-                onPress={() => navigate('Home')}
-            />
+            <View>
+                <Text>This is the Transport screen.</Text>
+            </View>
         );
     }
 }
 
-export default ProfileScreen;
+export default TransportScreen;

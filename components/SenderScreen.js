@@ -7,19 +7,18 @@ import {
     Button
 } from 'react-native';
 
-class HomeScreen extends React.Component {
+class SenderScreen extends React.Component {
     static navigationOptions = {
-        title: 'Welcome',
+        title: 'Sender',
     };
     render() {
         const { navigate } = this.props.navigation;
         return (
-            <Button
-                title="Go to Profile"
-                onPress={() => navigate('Profile')}
-            />
+            <View>
+                <Text>This is the sender screen.</Text>
+            </View>
         );
     }
 }
 
-export default HomeScreen;
+export default SenderScreen;
