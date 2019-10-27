@@ -193,6 +193,8 @@ PODS:
     - React
   - react-native-camera/RN (3.8.0):
     - React
+  - react-native-geolocation (2.0.2):
+    - React
   - react-native-maps (0.26.1):
     - React
   - React-RCTActionSheet (0.61.2):
@@ -237,6 +239,8 @@ PODS:
     - React-Core
     - React-RCTImage
     - RSKImageCropper
+  - RNVectorIcons (6.6.0):
+    - React
   - RSKImageCropper (2.2.3)
   - Yoga (1.14.0)
 
@@ -259,6 +263,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-camera-kit (from `../node_modules/react-native-camera-kit`)
+  - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-maps (from `../node_modules/react-native-maps`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -273,6 +278,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -314,6 +320,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-camera"
   react-native-camera-kit:
     :path: "../node_modules/react-native-camera-kit"
+  react-native-geolocation:
+    :path: "../node_modules/@react-native-community/geolocation"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   React-RCTActionSheet:
@@ -340,6 +348,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -362,6 +372,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 111d7d342b07a904c400592e02a2b958f1098b60
   react-native-camera: 3e52a28e4f437b566302e574bed0f77eeab3f737
   react-native-camera-kit: 8d908f90f4d31943fcfad3bf89a5768249af794b
+  react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
@@ -375,6 +386,7 @@ SPEC CHECKSUMS:
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
   RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
   RNImageCropPicker: e1d8c3381e5b05a1bdcd13ea57a4f1c020a09cef
+  RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
