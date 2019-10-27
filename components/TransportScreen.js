@@ -31,10 +31,10 @@ class TransportScreen extends React.Component {
         super()
         this.state = {
             initialPosition: {
-                latitude: 41.883885,
-                longitude: -87.653632,
-                latitudeDelta: .02,
-                longitudeDelta: .02
+                latitude: 41.800902,
+                longitude: -87.677334,
+                latitudeDelta: .25,
+                longitudeDelta: .25
             }
         }
     }
@@ -69,6 +69,7 @@ class TransportScreen extends React.Component {
                     region={this.state.initialPosition}
                 >
                     <Marker coordinate={{ latitude: 41.883885, longitude: -87.653632 }} />
+                    <Marker coordinate={{ latitude: 41.813074, longitude: -87.727103 }} />
                 </MapView>
 
                 <ActionButton buttonColor="rgba(231,76,60,1)" position="right" onPress={() => navigate('Transport2')}>
