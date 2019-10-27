@@ -2,9 +2,7 @@ import React from 'react';
 import {
     Platform,
     StyleSheet,
-    Text,
     View,
-    Button,
     PermissionsAndroid
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
