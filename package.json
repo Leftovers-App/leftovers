@@ -10,19 +10,16 @@
     "lint": "eslint ."
   },
   "dependencies": {
-<<<<<<< HEAD
     "native-base": "^2.13.8",
     "react": "16.9.0",
     "react-native": "0.61.2",
     "react-native-camera": "git+https://git@github.com/react-native-community/react-native-camera.git",
     "react-native-camera-kit": "^8.0.2",
     "react-native-elements": "^1.2.6",
-=======
     "@react-native-community/geolocation": "^2.0.2",
     "react": "16.9.0",
     "react-native": "0.61.2",
     "react-native-action-button": "^2.8.5",
->>>>>>> 33d06a34cd0ac79970dc420b26ead754da34bb34
     "react-native-gesture-handler": "^1.4.1",
     "react-native-image-crop-picker": "^0.26.1",
     "react-native-maps": "0.26.1",
