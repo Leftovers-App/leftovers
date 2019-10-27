@@ -39,13 +39,8 @@ class TransportScreen extends React.Component {
         }
     }
 
-    async componentDidMount() {
-        const { navigate } = this.props.navigation;
-    }
-
-
     render() {
-
+        const { navigate } = this.props.navigation;
         return (
             <View style={styles.container}>
                 <MapView
