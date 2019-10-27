@@ -20,12 +20,6 @@ const MainNavigator = createStackNavigator({
   Transport2: { screen: TransportScreenSecondary },
   Receiver2: { screen: ReceiverScreenSecondary }},
   {
-    headerMode: 'none',
-    navigationOptions: {
-        headerVisible: false,
-    }
-},
-  {
     initialRouteName: 'Home',
   }
 );
