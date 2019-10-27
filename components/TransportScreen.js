@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        paddingBottom: 50
+        // paddingBottom: 50
     },
     map: {
         ...StyleSheet.absoluteFillObject,
@@ -72,13 +72,6 @@ class TransportScreen extends React.Component {
                     <Marker coordinate={{ latitude: 41.883885, longitude: -87.653632 }} />
                     <Marker coordinate={{ latitude: 41.813074, longitude: -87.727103 }} />
                 </MapView>
-
-                <Fab
-                    style={{ backgroundColor: 'blue' }}
-                    position="topRight"
-                    onPress={() => navigate('Transport2')}>
-                    <Text>+</Text>
-                </Fab>
             </View>
         );
     }
