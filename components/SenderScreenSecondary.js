@@ -19,9 +19,11 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         justifyContent: 'center',
         alignContent: 'center',
-        padding:30
+        padding:30,
+        backgroundColor: '#FEF6E9'
     }
 });
+
 
 class SenderScreenSecondary extends React.Component {
 
@@ -42,7 +44,7 @@ class SenderScreenSecondary extends React.Component {
             <View style={styles.container}>
                 <Container>
         
-        <Content>
+        <Content style = {{backgroundColor: '#FEF6E9'}}>
         <DatePicker
             defaultDate={new Date(2018, 4, 4)}
             minimumDate={new Date(2018, 1, 1)}
@@ -58,11 +60,11 @@ class SenderScreenSecondary extends React.Component {
             onDateChange={this.setDate}
             disabled={false}
             />
-            <Text></Text>
-            <Text>
+            <Text style = {{backgroundColor: '#FEF6E9'}}></Text>
+            <Text style = {{backgroundColor: '#FEF6E9'}}> 
             </Text>
-            <Text></Text>
-          <Form>
+            <Text style = {{backgroundColor: '#FEF6E9'}}></Text>
+          <Form style = {{backgroundColor: '#FEF6E9'}}>
             <Item>
               <Input placeholder="Enter your name" />
             </Item>
