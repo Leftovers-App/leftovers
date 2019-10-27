@@ -3,13 +3,13 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import {
     Platform,
     StyleSheet,
-    Text,
     View,
-    Button,
     Dimensions,
-    PermissionsAndroid
+    PermissionsAndroid,
+    Image,
 } from 'react-native';
-import ActionButton from 'react-native-action-button';
+
+import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab } from 'native-base';
 
 const styles = StyleSheet.create({
     container: {
@@ -31,10 +31,10 @@ class TransportScreen extends React.Component {
         super()
         this.state = {
             initialPosition: {
-                latitude: 41.883885,
-                longitude: -87.653632,
-                latitudeDelta: .02,
-                longitudeDelta: .02
+                latitude: 41.800902,
+                longitude: -87.677334,
+                latitudeDelta: .25,
+                longitudeDelta: .25
             }
         }
     }
@@ -43,15 +43,41 @@ class TransportScreen extends React.Component {
         const { navigate } = this.props.navigation;
         return (
             <View style={styles.container}>
+                <Card style={{ width: 350, height: 220 }}>
+                    <CardItem>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: 'blue' }}>CURRENT JOB</Text>
+                    </CardItem>
+                    <CardItem cardBody style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Image
+                            source={require('./hackathon.jpg')}
+                            style={{ width: 300, height: 100 }}
+                        />
+                    </CardItem>
+                    <CardItem>
+                        <Left>
+                            <Text><Text style={{ fontWeight: 'bold' }}>FOR:</Text> Greater Chicago Food Depository</Text>
+                        </Left>
+                        <Right>
+                            <Text><Text style={{ fontWeight: 'bold' }}>DUE:</Text> in 28 minutes</Text>
+                        </Right>
+                    </CardItem>
+                </Card>
+
                 <MapView
                     provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                     style={styles.map}
                     region={this.state.initialPosition}
                 >
                     <Marker coordinate={{ latitude: 41.883885, longitude: -87.653632 }} />
+                    <Marker coordinate={{ latitude: 41.813074, longitude: -87.727103 }} />
                 </MapView>
-                <ActionButton buttonColor="rgba(231,76,60,1)" position="right" onPress={() => navigate('Transport2')}>
-                </ActionButton>
+
+                <Fab
+                    style={{ backgroundColor: 'blue' }}
+                    position="topRight"
+                    onPress={() => navigate('Transport2')}>
+                    <Text>+</Text>
+                </Fab>
             </View>
         );
     }
