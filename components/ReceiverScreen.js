@@ -6,6 +6,7 @@ import {
     View,
     Button,
     ScrollView,
+    TouchableOpacity,
 } from 'react-native';
 
 import {
@@ -15,6 +16,8 @@ import {
   // DebugInstructions,
   // ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import Jobs from './Jobs'
 
 var dummy_data = require('../DummyData/listItem.json');
 const jobs = dummy_data.jobs
@@ -57,10 +60,7 @@ class ReceiverScreen extends React.Component {
             style={styles.scrollView}>
                 <View>
                     <Text>Current</Text>
-                    <Button
-                        title="Receiver Second"
-                        onPress={() => navigate('Receiver2')}
-                    />
+                    <Jobs />
                 </View>
                 <View>
                     <Text>All Available</Text>
@@ -71,6 +71,7 @@ class ReceiverScreen extends React.Component {
                     <Text> {jobs[0].name} </Text>
                     <Text> {jobs[0].availability} </Text>
                 </View>
+                <Jobs />
             </ScrollView>
         );
     }
