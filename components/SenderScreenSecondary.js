@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextInput } from 'react-native';
+import { RNCamera } from 'react-native-camera';
 
 import {
     Platform,
@@ -8,6 +9,8 @@ import {
     View,
     Button
 } from 'react-native';
+
+import ImagePicker from 'react-native-image-crop-picker';
 
 class SenderScreenSecondary extends React.Component {
 
@@ -44,6 +47,16 @@ class SenderScreenSecondary extends React.Component {
                 onChangeText={text => this.setState({text})}
                 value={this.state.text} />
                 <Text>Please take a picture of the food:</Text>
+                <Button
+                    title="Take picture"
+                    onPress={() => ImagePicker.openCamera({
+                        width: 300,
+                        height: 400,
+                        cropping: true,
+                      }).then(image => {
+                        console.log(image);
+                      })}
+                />
                 <Button
                     title="Submit"
                     onPress={() => navigate('Sender')}
