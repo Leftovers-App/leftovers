@@ -2,10 +2,10 @@ import React from 'react';
 import {
     Platform,
     StyleSheet,
-    Text,
-    View,
-    Button
+    View
 } from 'react-native';
+
+import { Container, Header, Content, Button, Text } from 'native-base';
 
 class HomeScreen extends React.Component {
     static navigationOptions = {
@@ -15,18 +15,15 @@ class HomeScreen extends React.Component {
         const { navigate } = this.props.navigation;
         return (
             <View>
-                <Button
-                    title="Sender"
-                    onPress={() => navigate('Sender')}
-                />
-                <Button
-                    title="Receiver"
-                    onPress={() => navigate('Receiver')}
-                />
-                <Button
-                    title="Transport"
-                    onPress={() => navigate('Transport')}
-                />
+                <Button rounded onPress={() => navigate('Sender')}>
+                    <Text>Sender</Text>
+                 </Button>
+                 <Button rounded onPress={() => navigate('Receiver')}>
+                    <Text>Receiver</Text>
+                </Button>
+                <Button rounded onPress={() => navigate('Transport')}>
+                    <Text>Transport</Text>
+                </Button>
             </View>
         );
     }
