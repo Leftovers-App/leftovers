@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 
 
-const dummy_data = require('../DummyData/listItem.json');
+const dummy_data = require('../DummyData/jobs.json');
 
 
 const JobsList = (): Node => (

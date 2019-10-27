@@ -19,7 +19,7 @@ import {
 
 import Jobs from './Jobs'
 
-var dummy_data = require('../DummyData/listItem.json');
+var dummy_data = require('../DummyData/jobs.json');
 const jobs = dummy_data.jobs
 
 
