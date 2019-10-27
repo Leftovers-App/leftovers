@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         justifyContent: 'flex-end',
         alignItems: 'center',
+        paddingBottom: 50
     },
     map: {
         ...StyleSheet.absoluteFillObject,
