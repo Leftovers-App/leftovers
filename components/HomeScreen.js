@@ -73,14 +73,17 @@ class HomeScreen extends React.Component {
         const { navigate } = this.props.navigation;
         return (
             <View>
-                <Button rounded onPress={() => navigate('Sender')}>
-                    <Text>Sender</Text>
+                <Text></Text>
+                <Button bordered style={{alignSelf:'center'}} onPress={() => navigate('Sender')}>
+                    <Text style={{color: 'blue'}}>Sender</Text>
                  </Button>
-                 <Button rounded onPress={() => navigate('Receiver')}>
-                    <Text>Receiver</Text>
+                 <Text></Text>
+                 <Button bordered style={{alignSelf:'center'}} onPress={() => navigate('Receiver')}>
+                    <Text style={{color: 'blue'}}>Receiver</Text>
                 </Button>
-                <Button rounded onPress={() => navigate('Transport')}>
-                    <Text>Transport</Text>
+                <Text></Text>
+                <Button bordered style={{alignSelf:'center'}} onPress={() => navigate('Transport')}>
+                    <Text style={{color: 'blue'}}>Transport</Text>
                 </Button>
             </View>
         );
