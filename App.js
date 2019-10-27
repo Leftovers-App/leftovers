@@ -9,7 +9,6 @@ import ReceiverScreen from './components/ReceiverScreen'
 import TransportScreen from './components/TransportScreen'
 import SenderScreenSecondary from './components/SenderScreenSecondary'
 import ReceiverScreenSecondary from './components/ReceiverScreenSecondary'
-import TransportScreenSecondary from './components/TransportScreenSecondary'
 
 const MainNavigator = createStackNavigator({
   Home: { screen: HomeScreen },
@@ -17,8 +16,8 @@ const MainNavigator = createStackNavigator({
   Transport: { screen: TransportScreen },
   Receiver: { screen: ReceiverScreen },
   Sender2: { screen: SenderScreenSecondary },
-  Transport2: { screen: TransportScreenSecondary },
-  Receiver2: { screen: ReceiverScreenSecondary }},
+  Receiver2: { screen: ReceiverScreenSecondary }
+},
   {
     initialRouteName: 'Home',
   }

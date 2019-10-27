@@ -7,6 +7,7 @@ import {
     Button
 } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import { Fab } from 'native-base';
 import ActionButton from 'react-native-action-button';
 
 
@@ -34,7 +35,8 @@ class SenderScreen extends React.Component {
                 latitudeDelta: .02,
                 longitudeDelta: .02
             }
-        }}
+        }
+    }
 
     render() {
         const { navigate } = this.props.navigation;
@@ -48,8 +50,10 @@ class SenderScreen extends React.Component {
                 >
                     <Marker coordinate={{ latitude: 41.883885, longitude: -87.653632 }} />
                 </MapView>
-                <ActionButton buttonColor="rgba(231,76,60,1)" position="right" onPress={() => navigate('Sender2')}>
-                </ActionButton>
+                <ActionButton
+                    buttonColor="rgba(231,76,60,1)"
+                    position="right"
+                    onPress={() => navigate('Sender2')}></ActionButton>
             </View>
         );
     }
