@@ -18,8 +18,7 @@ const MainNavigator = createStackNavigator({
   Receiver: { screen: ReceiverScreen },
   Sender2: { screen: SenderScreenSecondary },
   Transport2: { screen: TransportScreenSecondary },
-  Receiver2: { screen: ReceiverScreenSecondary }
-},
+  Receiver2: { screen: ReceiverScreenSecondary }},
   {
     initialRouteName: 'Home',
   }

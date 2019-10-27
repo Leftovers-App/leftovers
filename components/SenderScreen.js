@@ -36,9 +36,6 @@ class SenderScreen extends React.Component {
             }
         }}
 
-        async componentDidMount() {
-            const { navigate } = this.props.navigation;
-        }
     render() {
         const { navigate } = this.props.navigation;
         return (
