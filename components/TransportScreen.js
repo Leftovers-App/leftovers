@@ -6,10 +6,10 @@ import {
     View,
     Dimensions,
     PermissionsAndroid,
-    Image
+    Image,
 } from 'react-native';
-import ActionButton from 'react-native-action-button';
-import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right } from 'native-base';
+
+import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab } from 'native-base';
 
 const styles = StyleSheet.create({
     container: {
@@ -72,8 +72,12 @@ class TransportScreen extends React.Component {
                     <Marker coordinate={{ latitude: 41.813074, longitude: -87.727103 }} />
                 </MapView>
 
-                <ActionButton buttonColor="rgba(231,76,60,1)" position="right" onPress={() => navigate('Transport2')}>
-                </ActionButton>
+                <Fab
+                    style={{ backgroundColor: 'blue' }}
+                    position="topRight"
+                    onPress={() => navigate('Transport2')}>
+                    <Text>+</Text>
+                </Fab>
             </View>
         );
     }
