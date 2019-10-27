@@ -66,7 +66,7 @@ class ReceiverScreen extends React.Component {
                     <Text>All Available</Text>
                     <Button
                         title={jobs[0].name}
-                        onPress={() => navigate('Receiver2')}  //send all of jobs through to next page?
+                        onPress={() => navigate('Receiver2', {itemId: 'foo'})}  //send all of jobs through to next page?
                     />
                     <Text> {jobs[0].name} </Text>
                     <Text> {jobs[0].availability} </Text>

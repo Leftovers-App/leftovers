@@ -13,10 +13,13 @@ class ReceiverScreenSecondary extends React.Component {
         title: 'Receiver2',
     };
     render() {
-        const { navigate } = this.props.navigation;
+        const { navigation } = this.props;
         return (
             <View>
                 <Text>This is the Secondary Receiver screen.</Text>
+                <Text>
+                    itemId: {JSON.stringify(navigation.getParam('itemId', 'NO-ID'))}
+                </Text>
                 <Image 
                     source={require('./hackathon.jpg')}  
                     style={{width: 400, height: 400}} 
