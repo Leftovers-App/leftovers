@@ -27,7 +27,7 @@ const JobsList = (): Node => (
           <View style={styles.separator} />
           <TouchableOpacity
             accessibilityRole={'button'}
-            onPress={() => openURLInBrowser('Reciever2')}
+            onPress={() => navigate('Reciever2')}
             style={styles.linkContainer}>
             <Text style={styles.link}>{item.name}</Text>
             <Text style={styles.description}>{item.description}</Text>
@@ -37,6 +37,8 @@ const JobsList = (): Node => (
     })}
   </View>
 );
+
+
 
 
 const styles = StyleSheet.create({
