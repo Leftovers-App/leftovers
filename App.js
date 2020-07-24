@@ -5,28 +5,15 @@ import styled from 'styled-components/native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import store from "./store";
-
-function HomeScreen({ navigation }) {
-  return (
-    <Container>
-      <Text>Welcome to Leftovers!</Text>
-      <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
-    </Container>
-  );
-}
-
-function DetailsScreen({ navigation }) {
-  return (
-    <Container>
-      <Text>Details Screen</Text>
-      <Button title="Go Home" onPress={() => navigation.navigate('Home')} />
-    </Container>
-  );
-}
+import HomeScreen from "./screens/HomeScreen";
+import DetailsScreen from "./screens/DetailsScreen";
+import ApiKeys from "./constants/ApiKeys";
+import * as firebase from "firebase";
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FireBaseConfig); }
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -41,10 +28,3 @@ export default function App() {
     </Provider>
   );
 }
-
-const Container = styled.View`
-  flex: 1;
-  backgroundColor: #fff;
-  alignItems: center;
-  justifyContent: space-evenly;
-`;
