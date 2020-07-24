@@ -1,25 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text } from 'react-native';
 import { Provider } from "react-redux";
+import styled from 'styled-components/native'
 import store from "./store";
 
 export default function App() {
   return (
     <Provider store={store}>
-      <View style={styles.container}>
+      <Container>
         <Text>Welcome to Leftovers!</Text>
-        <StatusBar style="auto" />
-      </View>
+      </Container>
     </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const Container = styled.View`
+  flex: 1;
+  backgroundColor: #fff;
+  alignItems: center;
+  justifyContent: center;
+`;
