@@ -4,11 +4,15 @@ import { Provider } from "react-redux";
 import styled from 'styled-components/native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import * as firebase from "firebase";
 import store from "./store";
+import ApiKeys from "./constants/ApiKeys";
+import LoginScreen from "./screens/auth/LoginScreen";
+import SignUpScreen from "./screens/auth/SignUpScreen";
+import ForgotPasswordScreen from "./screens/auth/ForgotPasswordScreen";
 import HomeScreen from "./screens/HomeScreen";
 import DetailsScreen from "./screens/DetailsScreen";
-import ApiKeys from "./constants/ApiKeys";
-import * as firebase from "firebase";
+import HomeDrawer from "./components/HomeDrawer";
 
 const Stack = createStackNavigator();
 
@@ -18,11 +22,13 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Home"
+          initialRouteName="Login"
           screenOptions={({ route }) => ({ headerShown: false })}
         >
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Details" component={DetailsScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Sign Up" component={SignUpScreen} />
+          <Stack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
+          <Stack.Screen name="Home Drawer" component={HomeDrawer} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
