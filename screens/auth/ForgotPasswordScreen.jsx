@@ -1,6 +1,7 @@
-import * as React from "react";
-import { Button, Platform, Text } from "react-native";
+import React, { useState } from "react";
+import { Alert, Button, Platform, Text, TextInput } from "react-native";
 import styled from "styled-components/native";
+import * as firebase from "firebase";
 
 let safeMargin;
 
@@ -11,10 +12,24 @@ if (Platform.OS == "ios") {
 }
 
 export default function ForgotPasswordScreen({ navigation, route }) {
+    const [email, setEmail] = useState("");
+
+    const onResetPasswordPress = () => {
+        firebase.auth().sendPasswordResetEmail(email)
+            .then(() => {
+                Alert.alert("Password reset email has been sent.");
+                navigation.goBack();
+            }, (error) => {
+                Alert.alert(error.message);
+            });
+    };
+
     return (
         <Container>
             <Text>Forgot Password Screen</Text>
-            <Button title="Go Back" onPress={() => navigation.goBack()} />
+            <TextInput autoCapitalize="none" autoCorrect={false} placeholder="Email" style={{ width: 200, height: 40, borderWidth: 1 }} value={email} onChangeText={(text) => { setEmail(text) }} />
+            <Button title="Reset Password" onPress={() => onResetPasswordPress()} />
+            <Button title="Back to Login" onPress={() => navigation.goBack()} />
         </Container>
     );
 }

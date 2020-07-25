@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, Button } from 'react-native';
 import { Provider } from "react-redux";
 import styled from 'styled-components/native'
@@ -17,7 +17,15 @@ import HomeDrawer from "./components/HomeDrawer";
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const onAuthStateChanged = (user) => {
+    setIsAuthenticated(!!user);
+  }
+
   if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FireBaseConfig); }
+  firebase.auth().onAuthStateChanged(onAuthStateChanged)
+
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -25,10 +33,15 @@ export default function App() {
           initialRouteName="Login"
           screenOptions={({ route }) => ({ headerShown: false })}
         >
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Sign Up" component={SignUpScreen} />
-          <Stack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
-          <Stack.Screen name="Home Drawer" component={HomeDrawer} />
+          {(!isAuthenticated) ?
+            <>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Sign Up" component={SignUpScreen} />
+              <Stack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
+            </>
+            :
+            <Stack.Screen name="Home Drawer" component={HomeDrawer} />
+          }
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
