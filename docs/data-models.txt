@@ -1,0 +1,45 @@
+Models:
+	User:
+		First Name
+		Last Name
+		Email
+		Password
+		Phone Number
+		Profile Picture
+		Transporter Approval Status
+		Transporter Approval Date
+		Recipient Approval Status
+		Recipient Approval Date
+		Account Creation Date
+		Financial Contributions (list):
+			Amount
+			Date
+			Status?
+		Recipient Organization:
+			Name
+			Address
+			Description
+			Website
+			Phone Number
+			Cover Photo
+		Transport Details:
+			Primary Transport (Vehicle Type)
+			License Copy (Photo/Scan)
+			License Expiration
+			Vehicle Details:
+				Make
+				Model
+				Color
+		Jobs (list)
+
+	Job:
+		Food Donor
+		Recipient
+		Transporter
+		Food Picture
+		Description
+		Current Location
+		Status
+		Time Offered
+		Time Picked Up
+		Time Delivered 

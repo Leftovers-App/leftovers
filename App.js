@@ -18,13 +18,18 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
+  // TODO: store currentUser globally using Redux
   const onAuthStateChanged = (user) => {
     setIsAuthenticated(!!user);
+    if (user) {
+      setCurrentUser(user);
+    }
   }
 
   if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FireBaseConfig); }
-  firebase.auth().onAuthStateChanged(onAuthStateChanged)
+  firebase.auth().onAuthStateChanged(onAuthStateChanged);
 
   return (
     <Provider store={store}>
