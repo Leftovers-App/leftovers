@@ -1,19 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-let initialState = {
-    currentUser: undefined
+let initialState: currentState = {
+    email: undefined
 };
 
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        setCurrentUser(state, action) {
-            state.currentUser = action.payload.currentUser;
+        signIn(state, action) {
+            state.email = action.payload.email;
+        },
+        signOut(state) {
+            state.email = null;
         },
     },
 });
 
 const { actions, reducer } = authSlice;
-export const { setCurrentUser } = actions;
+export const { signIn, signOut } = actions;
 export default reducer;
