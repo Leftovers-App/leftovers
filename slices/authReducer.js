@@ -1,19 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-let initialState: currentState = {
-    isLoadingComplete: false,
-    isAuthenticationReady: false,
-    isAuthenticated: false
+let initialState = {
+    currentUser: undefined
 };
 
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
+        setCurrentUser(state, action) {
+            state.currentUser = action.payload.currentUser;
+        },
     },
 });
 
-export const {
-} = authSlice.actions;
-
-export default authSlice.reducer;
+const { actions, reducer } = authSlice;
+export const { setCurrentUser } = actions;
+export default reducer;
