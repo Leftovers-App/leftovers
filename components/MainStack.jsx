@@ -17,6 +17,7 @@ import { signIn, signOut } from "../slices/authReducer";
 const Stack = createStackNavigator();
 
 export default function MainStack() {
+    // Handle Firebase auth state changes
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const dispatch = useDispatch();
@@ -31,6 +32,7 @@ export default function MainStack() {
         }
     }
 
+    // Initialize Firebase
     if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FireBaseConfig); }
     firebase.auth().onAuthStateChanged(onAuthStateChanged);
 
