@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Platform, Text } from "react-native";
+import { Button, Dimensions, Platform, ScrollView, Text, View } from "react-native";
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,15 +13,16 @@ if (Platform.OS == "ios") {
     safeMargin = 0;
 }
 
+const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
+
 export default function HomeScreen({ navigation, route }) {
     const { email } = useSelector(
         (state: RootState) => state.auth
     );
-    const [desc, setDesc] = useState("");
     const [myPosts, setMyPosts] = useState([]);
 
-    useEffect(() => {
-        // Load Posts
+    const loadPosts = () => {
         if (email) {
             const db = firebase.firestore();
             const postsRef = db.collection('posts');
@@ -30,7 +31,8 @@ export default function HomeScreen({ navigation, route }) {
                 .then(posts => {
                     let tempPosts = [];
                     posts.forEach(doc => {
-                        tempPosts.push(<Text key={doc.data().id} >{doc.data().description}</Text>)
+                        console.log(doc)
+                        tempPosts.push(<Text key={doc.id} style={{ marginBottom: 25 }}>{doc.data().description}</Text>)
                     })
                     setMyPosts(tempPosts);
                 });
@@ -38,19 +40,26 @@ export default function HomeScreen({ navigation, route }) {
         else {
             setMyPosts([<Text>No posts available!</Text>]);
         }
-    });
+    };
+
+    useEffect(() => {
+        loadPosts();
+    }, []);
 
     const onLogoutPress = () => {
         firebase.auth().signOut();
     };
 
-    console.log(myPosts);
-
     return (
         <Container>
             <Welcome email={email} />
             <Text>Here are your posts:</Text>
-            {myPosts}
+            <View style={{ height: screenHeight * .3 }}>
+                <ScrollView>
+                    {myPosts}
+                </ScrollView>
+            </View>
+            <Button title="Reload Posts" onPress={() => loadPosts()} />
             <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
             <Button title="Logout" onPress={() => onLogoutPress()} />
         </Container>

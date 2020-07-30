@@ -30,9 +30,9 @@ Models:
 				Make
 				Model
 				Color
-		Jobs (list)
+		Posts (list)
 
-	Job:
+	Post:
 		Food Donor
 		Recipient
 		Transporter
