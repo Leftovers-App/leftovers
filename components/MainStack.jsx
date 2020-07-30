@@ -23,13 +23,13 @@ export default function MainStack() {
     const dispatch = useDispatch();
 
     const onAuthStateChanged = (user) => {
-        setIsAuthenticated(!!user);
         if (user) {
             dispatch(signIn({ email: user['email'] }));
         }
         else {
-            dispatch(signOut())
+            dispatch(signOut());
         }
+        setIsAuthenticated(!!user);
     }
 
     // Initialize Firebase

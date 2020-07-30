@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Dimensions, Platform, ScrollView, Text, View } from "react-native";
+import { Alert, Button, Dimensions, Platform, ScrollView, Text, TextInput, View } from "react-native";
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,17 +21,18 @@ export default function HomeScreen({ navigation, route }) {
         (state: RootState) => state.auth
     );
     const [myPosts, setMyPosts] = useState([]);
+    const [newPostDesc, setNewPostDesc] = useState([]);
+
+    const db = firebase.firestore();
+    const postsRef = db.collection('posts');
 
     const loadPosts = () => {
         if (email) {
-            const db = firebase.firestore();
-            const postsRef = db.collection('posts');
             const postsQuery = postsRef.where('foodDonor', '==', email);
             postsQuery.get()
                 .then(posts => {
                     let tempPosts = [];
                     posts.forEach(doc => {
-                        console.log(doc)
                         tempPosts.push(<Text key={doc.id} style={{ marginBottom: 25 }}>{doc.data().description}</Text>)
                     })
                     setMyPosts(tempPosts);
@@ -40,6 +41,20 @@ export default function HomeScreen({ navigation, route }) {
         else {
             setMyPosts([<Text>No posts available!</Text>]);
         }
+    };
+
+    const createPost = () => {
+        postsRef.add({
+            description: newPostDesc,
+            foodDonor: email
+        }).then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+            setNewPostDesc("");
+            loadPosts();
+        }).catch((error) => {
+            console.error("Error adding document: ", error);
+            Alert.alert(error.message);
+        });
     };
 
     useEffect(() => {
@@ -52,16 +67,22 @@ export default function HomeScreen({ navigation, route }) {
 
     return (
         <Container>
-            <Welcome email={email} />
-            <Text>Here are your posts:</Text>
-            <View style={{ height: screenHeight * .3 }}>
+            <View style={{ width: screenWidth * .8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Welcome email={email} />
+                <Button title="Logout" onPress={() => onLogoutPress()} />
+            </View>
+            <View style={{ width: screenWidth * .8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text>Here are your posts:</Text>
+                <Button title="Reload Posts" onPress={() => loadPosts()} />
+            </View>
+            <View style={{ height: screenHeight * .2 }}>
                 <ScrollView>
                     {myPosts}
                 </ScrollView>
             </View>
-            <Button title="Reload Posts" onPress={() => loadPosts()} />
+            <TextInput placeholder="Post Description" style={{ width: 200, height: 40, borderWidth: 1 }} value={newPostDesc} onChangeText={(text) => { setNewPostDesc(text) }} />
+            <Button title="Create Post" onPress={() => createPost()} />
             <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
-            <Button title="Logout" onPress={() => onLogoutPress()} />
         </Container>
     );
 }
