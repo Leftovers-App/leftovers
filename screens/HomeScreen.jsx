@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Button, Dimensions, Platform, ScrollView, Text, TextInput, View } from "react-native";
+import { Alert, Button, Dimensions, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +22,7 @@ export default function HomeScreen({ navigation, route }) {
         (state: RootState) => state.auth
     );
     const [myPosts, setMyPosts] = useState([]);
-    const [newPostDesc, setNewPostDesc] = useState([]);
+    const [newPostDesc, setNewPostDesc] = useState("");
 
     const db = firebase.firestore();
     const postsRef = db.collection('posts');
@@ -37,7 +37,7 @@ export default function HomeScreen({ navigation, route }) {
                         tempPosts.push(
                             <SBRow key={doc.id} style={{ marginBottom: 25 }}>
                                 <Text>{doc.data().description}</Text>
-                                <CircleXIcon />
+                                <TouchableOpacity onPress={() => { deletePost(doc.id) }}><CircleXIcon /></TouchableOpacity>
                             </SBRow>
                         )
                     })
@@ -48,6 +48,18 @@ export default function HomeScreen({ navigation, route }) {
             setMyPosts([<Text>No posts available!</Text>]);
         }
     };
+
+    const deletePost = (postId) => {
+        postsRef.doc(postId).delete()
+            .then(() => {
+                console.log("Document successfully deleted!");
+                loadPosts();
+            })
+            .catch((error) => {
+                console.error("Error removing document");
+                Alert.alert(error.message);
+            });
+    }
 
     const createPost = () => {
         postsRef.add({
@@ -105,5 +117,5 @@ const SBRow = styled.View`
     flexDirection: row;
     justifyContent: space-between;
     alignItems: center;
-    width: ${screenWidth * .8};
+    width: ${screenWidth * .8}px;
 `;
