@@ -11,10 +11,6 @@ Models:
 		Recipient Approval Status
 		Recipient Approval Date
 		Account Creation Date
-		Financial Contributions (list):
-			Amount
-			Date
-			Status?
 		Recipient Organization:
 			Name
 			Address
@@ -30,7 +26,6 @@ Models:
 				Make
 				Model
 				Color
-		Posts (list)
 
 	Post:
 		Food Donor
@@ -42,4 +37,9 @@ Models:
 		Status
 		Time Offered
 		Time Picked Up
-		Time Delivered 
+		Time Delivered
+
+	Financial Contribution:
+		Amount
+		Date
+		Status

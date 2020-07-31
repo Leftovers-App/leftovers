@@ -4,6 +4,7 @@ import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { Welcome } from "../components/Welcome";
+import { CircleXIcon } from "../components/Icons";
 
 let safeMargin;
 
@@ -33,7 +34,12 @@ export default function HomeScreen({ navigation, route }) {
                 .then(posts => {
                     let tempPosts = [];
                     posts.forEach(doc => {
-                        tempPosts.push(<Text key={doc.id} style={{ marginBottom: 25 }}>{doc.data().description}</Text>)
+                        tempPosts.push(
+                            <SBRow key={doc.id} style={{ marginBottom: 25 }}>
+                                <Text>{doc.data().description}</Text>
+                                <CircleXIcon />
+                            </SBRow>
+                        )
                     })
                     setMyPosts(tempPosts);
                 });
@@ -67,20 +73,20 @@ export default function HomeScreen({ navigation, route }) {
 
     return (
         <Container>
-            <View style={{ width: screenWidth * .8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <SBRow>
                 <Welcome email={email} />
                 <Button title="Logout" onPress={() => onLogoutPress()} />
-            </View>
-            <View style={{ width: screenWidth * .8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            </SBRow>
+            <SBRow>
                 <Text>Here are your posts:</Text>
                 <Button title="Reload Posts" onPress={() => loadPosts()} />
-            </View>
+            </SBRow>
             <View style={{ height: screenHeight * .2 }}>
                 <ScrollView>
                     {myPosts}
                 </ScrollView>
             </View>
-            <TextInput placeholder="Post Description" style={{ width: 200, height: 40, borderWidth: 1 }} value={newPostDesc} onChangeText={(text) => { setNewPostDesc(text) }} />
+            <TextInput placeholder="Post Description" style={{ width: screenWidth * .8, height: 40, borderWidth: 1 }} value={newPostDesc} onChangeText={(text) => { setNewPostDesc(text) }} />
             <Button title="Create Post" onPress={() => createPost()} />
             <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
         </Container>
@@ -93,4 +99,11 @@ const Container = styled.SafeAreaView`
     backgroundColor: #fff;
     alignItems: center;
     justifyContent: space-evenly;
+`;
+
+const SBRow = styled.View`
+    flexDirection: row;
+    justifyContent: space-between;
+    alignItems: center;
+    width: ${screenWidth * .8};
 `;
