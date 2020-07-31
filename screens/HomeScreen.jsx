@@ -3,7 +3,6 @@ import { Alert, Button, Dimensions, Platform, ScrollView, Text, TextInput, Touch
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { Welcome } from "../components/Welcome";
 import { CircleXIcon } from "../components/Icons";
 
 let safeMargin;
@@ -86,10 +85,6 @@ export default function HomeScreen({ navigation, route }) {
     return (
         <Container>
             <SBRow>
-                <Welcome email={email} />
-                <Button title="Logout" onPress={() => onLogoutPress()} />
-            </SBRow>
-            <SBRow>
                 <Text>Here are your posts:</Text>
                 <Button title="Reload Posts" onPress={() => loadPosts()} />
             </SBRow>
@@ -100,7 +95,6 @@ export default function HomeScreen({ navigation, route }) {
             </View>
             <TextInput placeholder="Post Description" style={{ width: screenWidth * .8, height: 40, borderWidth: 1 }} value={newPostDesc} onChangeText={(text) => { setNewPostDesc(text) }} />
             <Button title="Create Post" onPress={() => createPost()} />
-            <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
         </Container>
     );
 }
