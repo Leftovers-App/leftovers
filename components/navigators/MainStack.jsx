@@ -9,7 +9,6 @@ import ApiKeys from "../../constants/ApiKeys";
 import LoginScreen from "../../screens/auth/LoginScreen";
 import SignUpScreen from "../../screens/auth/SignUpScreen";
 import ForgotPasswordScreen from "../../screens/auth/ForgotPasswordScreen";
-import HomeScreen from "../../screens/HomeScreen";
 import DetailsScreen from "../../screens/DetailsScreen";
 import HomeDrawer from "./HomeDrawer";
 import { signIn, signOut } from "../../slices/authReducer";
