@@ -3,6 +3,6 @@ import { Text } from "react-native";
 
 export const Welcome = (props) => {
     return (
-        <Text>{props.email}!</Text>
+        <Text>Welcome, {props.email}!</Text>
     );
 };

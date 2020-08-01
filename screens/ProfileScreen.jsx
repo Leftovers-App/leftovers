@@ -2,6 +2,7 @@ import * as React from "react";
 import { Button, Platform, Text } from "react-native";
 import styled from "styled-components/native";
 import * as firebase from "firebase";
+import { useDispatch, useSelector } from "react-redux";
 import { Welcome } from "../components/Welcome";
 
 let safeMargin;
@@ -13,6 +14,10 @@ if (Platform.OS == "ios") {
 }
 
 export default function DetailsScreen({ navigation, route }) {
+    const { email } = useSelector(
+        (state: RootState) => state.auth
+    );
+
     const onLogoutPress = () => {
         firebase.auth().signOut();
     };
