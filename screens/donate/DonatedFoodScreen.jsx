@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import * as firebase from "firebase";
+import { fetchFoodDonations } from "../../slices/postReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { CircleXIcon } from "../../components/Icons";
 
@@ -18,60 +18,82 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function DonatedFoodScreen({ navigation, route }) {
     const { email } = useSelector(
-        (state: RootState) => state.auth
+        (state) => state.auth
     );
-    const [myPosts, setMyPosts] = useState([]);
+    const { foodDonations } = useSelector(
+        (state) => state.post
+    );
 
-    const db = firebase.firestore();
-    const postsRef = db.collection('posts');
+    const dispatch = useDispatch();
 
-    const loadPosts = () => {
-        if (email) {
-            const postsQuery = postsRef.where('foodDonor', '==', email);
-            postsQuery.get()
-                .then(posts => {
-                    let tempPosts = [];
-                    posts.forEach(doc => {
-                        tempPosts.push(
-                            <SBRow key={doc.id} style={{ marginBottom: 25 }}>
-                                <Text>{doc.data().description}</Text>
-                                <TouchableOpacity onPress={() => { deletePost(doc.id) }}><CircleXIcon /></TouchableOpacity>
-                            </SBRow>
-                        )
-                    })
-                    setMyPosts(tempPosts);
-                });
-        }
-        else {
-            setMyPosts([<Text>No posts available!</Text>]);
-        }
-    };
+    // const [myPosts, setMyPosts] = useState([<Text>No posts available!</Text>]);
+
+    // const loadPosts = () => {
+    //     if (email) {
+    //         let tempPosts = [];
+    //         const posts = (async () => await getFoodDonations(email));
+    //         posts.forEach(doc => {
+    //             tempPosts.push(
+    //                 <SBRow key={doc.id} style={{ marginBottom: 25 }}>
+    //                     <Text>{doc.data().description}</Text>
+    //                     <TouchableOpacity onPress={() => { deletePost(doc.id) }}><CircleXIcon /></TouchableOpacity>
+    //                 </SBRow>
+    //             )
+    //         })
+    //         setMyPosts(tempPosts);
+    //     }
+    //     else {
+    //         setMyPosts([<Text>No posts available!</Text>]);
+    //     }
+    // };
+
+    const formatPosts = (posts) => {
+        let formattedPosts = [];
+        posts.forEach(doc => {
+            formattedPosts.push(
+                <SBRow key={doc.id} style={{ marginBottom: 25 }}>
+                    <Text>{doc.data.description}</Text>
+                    <TouchableOpacity onPress={() => { deletePost(doc.id) }}><CircleXIcon /></TouchableOpacity>
+                </SBRow>
+            )
+        })
+        return formattedPosts;
+    }
 
     const deletePost = (postId) => {
-        postsRef.doc(postId).delete()
-            .then(() => {
-                console.log("Document successfully deleted!");
-                loadPosts();
-            })
-            .catch((error) => {
-                console.error("Error removing document");
-                Alert.alert(error.message);
-            });
+        // postsRef.doc(postId).delete()
+        //     .then(() => {
+        //         console.log("Document successfully deleted!");
+        //         loadPosts();
+        //     })
+        //     .catch((error) => {
+        //         console.error("Error removing document");
+        //         Alert.alert(error.message);
+        //     });
+        console.log('called deletePost for item' + postId);
     }
 
     useEffect(() => {
-        loadPosts();
+        if (email) {
+            dispatch(fetchFoodDonations(email));
+        }
     }, []);
 
     return (
         <Container>
             <SBRow>
                 <Text>Here are your posts:</Text>
-                <Button title="Reload Posts" onPress={() => loadPosts()} />
+                <Button title="Reload Posts" onPress={() => { dispatch(fetchFoodDonations(email)); }} />
             </SBRow>
             <View style={{ height: screenHeight * .5 }}>
                 <ScrollView>
-                    {myPosts}
+                    {(foodDonations.length > 0) ?
+                        <>
+                            {formatPosts(foodDonations)}
+                        </>
+                        :
+                        <Text>No posts available!</Text>
+                    }
                 </ScrollView>
             </View>
         </Container>

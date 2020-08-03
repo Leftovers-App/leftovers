@@ -3,6 +3,7 @@ import { Button, Dimensions, Platform, Text, TextInput } from "react-native";
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchFoodDonations } from "../../slices/postReducer";
 
 let safeMargin;
 
@@ -21,6 +22,8 @@ export default function DonatedFoodScreen({ navigation, route }) {
     );
     const [newPostDesc, setNewPostDesc] = useState("");
 
+    const dispatch = useDispatch();
+
     const db = firebase.firestore();
     const postsRef = db.collection('posts');
 
@@ -31,6 +34,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
         }).then((docRef) => {
             console.log("Document written with ID: ", docRef.id);
             setNewPostDesc("");
+            dispatch(fetchFoodDonations(email));
             navigation.navigate("Donated Food")
         }).catch((error) => {
             console.error("Error adding document: ", error);

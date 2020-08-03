@@ -5,7 +5,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as firebase from "firebase";
 import { useDispatch } from "react-redux";
-import ApiKeys from "../../constants/ApiKeys";
 import LoginScreen from "../../screens/auth/LoginScreen";
 import SignUpScreen from "../../screens/auth/SignUpScreen";
 import ForgotPasswordScreen from "../../screens/auth/ForgotPasswordScreen";
