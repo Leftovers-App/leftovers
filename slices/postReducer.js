@@ -1,35 +1,56 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as firebase from "firebase";
 import ApiKeys from "../constants/ApiKeys";
-import { getFoodDonations } from "../services/FirebaseService";
+import { deleteFoodDonation, getFoodDonations } from "../services/FirebaseService";
 
 let initialState = {
-    foodDonationsStatus: "idle",
+    deleteFoodDonationStatuses: {},
+    deleteFoodDonationErrors: {},
+    getFoodDonationsStatus: "idle",
     foodDonations: [],
-    foodDonationsError: undefined
+    getFoodDonationsError: null
 };
 
 const postSlice = createSlice({
     name: "post",
     initialState,
     reducers: {
-        foodDonationsLoading(state) {
-            state.foodDonationsError = null;
-            state.foodDonationsStatus = 'loading';
+        deleteFoodDonationStarted(state, action) {
+            state.deleteFoodDonationErrors[action.payload] = null;
+            state.deleteFoodDonationStatuses[action.payload] = 'loading';
         },
-        foodDonationsSuccess(state, action) {
+        deleteFoodDonationSuccess(state, action) {
+            state.deleteFoodDonationStatuses[action.payload] = 'idle';
+        },
+        deleteFoodDonationFailed(state, action) {
+            state.deleteFoodDonationErrors[action.payload.id] = action.payload.error;
+            state.deleteFoodDonationStatuses[action.payload.id] = 'idle';
+        },
+        getFoodDonationsStarted(state) {
+            state.getFoodDonationsError = null;
+            state.getFoodDonationsStatus = 'loading';
+        },
+        getFoodDonationsSuccess(state, action) {
             state.foodDonations = action.payload;
-            state.foodDonationsStatus = 'idle';
+            let deleteStatuses = {};
+            let deleteErrors = {};
+            for (const donation of state.foodDonations) {
+                deleteStatuses[donation.id] = 'idle';
+                deleteErrors[donation.id] = null;
+            }
+            state.deleteFoodDonationStatuseses = deleteStatuses;
+            state.deleteFoodDonationErrors = deleteErrors;
+            state.getFoodDonationsStatus = 'idle';
         },
-        foodDonationsFailed(state, action) {
-            state.foodDonationsError = action.payload;
-            state.foodDonationsStatus = 'idle';
+        getFoodDonationsFailed(state, action) {
+            state.getFoodDonationsError = action.payload;
+            state.getFoodDonationsStatus = 'idle';
         }
     },
 });
 
 const fetchFoodDonations = (email) => async dispatch => {
-    dispatch(foodDonationsLoading());
+    dispatch(getFoodDonationsStarted());
     try {
         const posts = await getFoodDonations(email);
         let foodDonations = [];
@@ -39,13 +60,26 @@ const fetchFoodDonations = (email) => async dispatch => {
                 data: doc.data()
             });
         })
-        dispatch(foodDonationsSuccess(foodDonations));
+        dispatch(getFoodDonationsSuccess(foodDonations));
     } catch (err) {
-        dispatch(foodDonationsFailed(err.toString()));
+        dispatch(getFoodDonationsFailed(err.toString()));
+    }
+}
+
+const cancelFoodDonation = (postId, email) => async dispatch => {
+    dispatch(deleteFoodDonationStarted(postId));
+    try {
+        await deleteFoodDonation(postId);
+        dispatch(deleteFoodDonationSuccess(postId));
+        dispatch(fetchFoodDonations(email));
+    }
+    catch (err) {
+        console.log(err);
+        dispatch(deleteFoodDonationFailed({ id: postId, error: err.toString() }));
     }
 }
 
 const { actions, reducer } = postSlice;
-export const { foodDonationsLoading, foodDonationsSuccess, foodDonationsFailed } = actions;
-export { fetchFoodDonations };
+export const { deleteFoodDonationStarted, deleteFoodDonationSuccess, deleteFoodDonationFailed, getFoodDonationsStarted, getFoodDonationsSuccess, getFoodDonationsFailed } = actions;
+export { cancelFoodDonation, fetchFoodDonations };
 export default reducer;
