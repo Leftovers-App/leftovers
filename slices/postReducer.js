@@ -14,7 +14,8 @@ const postSlice = createSlice({
     initialState,
     reducers: {
         foodDonationsLoading(state) {
-            state.foodDonationsStatus = "loading";
+            state.foodDonationsError = null;
+            state.foodDonationsStatus = 'loading';
         },
         foodDonationsSuccess(state, action) {
             state.foodDonations = action.payload;

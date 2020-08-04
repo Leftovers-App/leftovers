@@ -20,7 +20,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
     const { email } = useSelector(
         (state) => state.auth
     );
-    const { foodDonations } = useSelector(
+    const { foodDonations, foodDonationsStatus, foodDonationsError } = useSelector(
         (state) => state.post
     );
     const dispatch = useDispatch();
@@ -65,12 +65,16 @@ export default function DonatedFoodScreen({ navigation, route }) {
             </SBRow>
             <View style={{ height: screenHeight * .5 }}>
                 <ScrollView>
-                    {(foodDonations.length > 0) ?
-                        <>
-                            {formatPosts(foodDonations)}
-                        </>
-                        :
-                        <Text>No posts available!</Text>
+                    {(foodDonationsError) ?
+                        <Text style={{ color: 'red' }}>{foodDonationsError}</Text>
+                        : (foodDonationsStatus === 'loading') ?
+                            <Text>Loading posts...</Text>
+                            : (foodDonations.length > 0) ?
+                                <>
+                                    {formatPosts(foodDonations)}
+                                </>
+                                :
+                                <Text>No posts available!</Text>
                     }
                 </ScrollView>
             </View>
