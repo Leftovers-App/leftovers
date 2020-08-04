@@ -30,32 +30,18 @@ const postSlice = createSlice({
 const fetchFoodDonations = (email) => async dispatch => {
     dispatch(foodDonationsLoading());
     try {
-        // console.log('getting data in thunk...')
-        // const response = await getFoodDonations(email);
-        // await getFoodDonations(email);
-        // console.log('got data in thunk!');
-        // console.log(response);
-        console.log('starting data get')
-        const db = firebase.firestore();
-        const postsRef = db.collection('posts');
-        const postsQuery = postsRef.where('foodDonor', '==', email);
-        await postsQuery.get()
-            .then(posts => {
-                let tempPosts = [];
-                console.log('got data in firebase service!');
-                posts.forEach(doc => {
-                    tempPosts.push({
-                        id: doc.id,
-                        data: doc.data()
-                    });
-                })
-                dispatch(foodDonationsSuccess(tempPosts));
+        const posts = await getFoodDonations(email);
+        let foodDonations = [];
+        posts.forEach(doc => {
+            foodDonations.push({
+                id: doc.id,
+                data: doc.data()
             });
-        // dispatch(foodDonationsSuccess(response.data));
+        })
+        dispatch(foodDonationsSuccess(foodDonations));
     } catch (err) {
         dispatch(foodDonationsFailed(err.toString()));
     }
-    console.log('end of thunk')
 }
 
 const { actions, reducer } = postSlice;

@@ -23,29 +23,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
     const { foodDonations } = useSelector(
         (state) => state.post
     );
-
     const dispatch = useDispatch();
-
-    // const [myPosts, setMyPosts] = useState([<Text>No posts available!</Text>]);
-
-    // const loadPosts = () => {
-    //     if (email) {
-    //         let tempPosts = [];
-    //         const posts = (async () => await getFoodDonations(email));
-    //         posts.forEach(doc => {
-    //             tempPosts.push(
-    //                 <SBRow key={doc.id} style={{ marginBottom: 25 }}>
-    //                     <Text>{doc.data().description}</Text>
-    //                     <TouchableOpacity onPress={() => { deletePost(doc.id) }}><CircleXIcon /></TouchableOpacity>
-    //                 </SBRow>
-    //             )
-    //         })
-    //         setMyPosts(tempPosts);
-    //     }
-    //     else {
-    //         setMyPosts([<Text>No posts available!</Text>]);
-    //     }
-    // };
 
     const formatPosts = (posts) => {
         let formattedPosts = [];
