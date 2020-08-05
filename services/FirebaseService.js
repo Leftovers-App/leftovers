@@ -1,8 +1,7 @@
 import * as firebase from "firebase";
 import ApiKeys from "../constants/ApiKeys";
 
-// Initialize Firebase
-if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FireBaseConfig); }
+if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FirebaseConfig); }
 
 const db = firebase.firestore();
 const postsRef = db.collection('posts');

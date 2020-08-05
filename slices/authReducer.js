@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-let initialState: currentState = {
-    email: undefined
+let initialState = {
+    email: undefined,
+    isAuthenticated: false
 };
 
 const authSlice = createSlice({
@@ -10,8 +11,10 @@ const authSlice = createSlice({
     reducers: {
         signIn(state, action) {
             state.email = action.payload.email;
+            state.isAuthenticated = true;
         },
         signOut(state) {
+            state.isAuthenticated = false;
             state.email = null;
         },
     },

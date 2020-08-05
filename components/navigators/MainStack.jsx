@@ -1,37 +1,31 @@
 import React, { useState } from 'react';
-import { Text, Button } from 'react-native';
-import styled from 'styled-components/native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import * as firebase from "firebase";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import firebase from "../../services/FirebaseService";
+import { signIn, signOut } from "../../slices/authReducer";
 import LoginScreen from "../../screens/auth/LoginScreen";
 import SignUpScreen from "../../screens/auth/SignUpScreen";
 import ForgotPasswordScreen from "../../screens/auth/ForgotPasswordScreen";
 import HomeDrawer from "./HomeDrawer";
-import { signIn, signOut } from "../../slices/authReducer";
 
 const Stack = createStackNavigator();
 
 export default function MainStack() {
-    // Handle Firebase auth state changes
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-
     const dispatch = useDispatch();
 
-    const onAuthStateChanged = (user) => {
+    firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             dispatch(signIn({ email: user['email'] }));
         }
         else {
             dispatch(signOut());
         }
-        setIsAuthenticated(!!user);
-    }
+    });
 
-    // Initialize Firebase
-    if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FireBaseConfig); }
-    firebase.auth().onAuthStateChanged(onAuthStateChanged);
+    const { isAuthenticated } = useSelector(
+        (state) => state.auth
+    );
 
     return (
         <NavigationContainer>
