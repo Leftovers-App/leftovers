@@ -17,6 +17,15 @@ async function createFoodDonation(email, newPostDesc) {
     });
 };
 
+async function getAvailableOffers() {
+    const postsQuery = postsRef.where('status', '==', 'available');
+    return postsQuery.get()
+        .then(posts => {
+            console.log('Retrieved available offers!');
+            return posts;
+        });
+}
+
 async function getFoodDonations(email) {
     const postsQuery = postsRef.where('foodDonor', '==', email);
     return postsQuery.get()
@@ -33,6 +42,6 @@ async function deleteFoodDonation(postId) {
         });
 }
 
-export { createFoodDonation, deleteFoodDonation, getFoodDonations };
+export { createFoodDonation, deleteFoodDonation, getAvailableOffers, getFoodDonations };
 
 export default firebase

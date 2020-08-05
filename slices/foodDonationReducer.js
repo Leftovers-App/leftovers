@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as firebase from "firebase";
-import ApiKeys from "../constants/ApiKeys";
 import { createFoodDonation, deleteFoodDonation, getFoodDonations } from "../services/FirebaseService";
 
 let initialState = {

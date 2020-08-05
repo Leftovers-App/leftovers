@@ -53,21 +53,21 @@ export default function DonatedFoodScreen({ navigation, route }) {
     return (
         <Container>
             <SBRow>
-                <Text>Here are your posts:</Text>
-                <Button title="Reload Posts" onPress={() => { dispatch(fetchFoodDonations(email)); }} />
+                <Text>Your food donations:</Text>
+                <Button title="Reload" onPress={() => { dispatch(fetchFoodDonations(email)); }} />
             </SBRow>
             <View style={{ height: screenHeight * .5 }}>
                 <ScrollView>
                     {(getFoodDonationsError) ?
                         <Text style={{ color: 'red' }}>{getFoodDonationsError}</Text>
                         : (getFoodDonationsStatus === 'loading') ?
-                            <Text>Loading posts...</Text>
+                            <Text>Loading donations...</Text>
                             : (foodDonations.length > 0) ?
                                 <>
                                     {formatPosts(foodDonations)}
                                 </>
                                 :
-                                <Text>No posts available!</Text>
+                                <Text>No existing donations!</Text>
                     }
                 </ScrollView>
             </View>
