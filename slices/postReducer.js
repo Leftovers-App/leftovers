@@ -1,20 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as firebase from "firebase";
 import ApiKeys from "../constants/ApiKeys";
-import { deleteFoodDonation, getFoodDonations } from "../services/FirebaseService";
+import { createFoodDonation, deleteFoodDonation, getFoodDonations } from "../services/FirebaseService";
 
 let initialState = {
-    deleteFoodDonationStatuses: {},
+    createFoodDonationError: null,
+    createFoodDonationStatus: 'idle',
     deleteFoodDonationErrors: {},
-    getFoodDonationsStatus: "idle",
+    deleteFoodDonationStatuses: {},
     foodDonations: [],
-    getFoodDonationsError: null
+    getFoodDonationsError: null,
+    getFoodDonationsStatus: "idle",
+    newDonationId: null
 };
 
 const postSlice = createSlice({
     name: "post",
     initialState,
     reducers: {
+        createFoodDonationStarted(state, action) {
+            state.createFoodDonationError = null;
+            state.createFoodDonationStatus = 'loading';
+        },
+        createFoodDonationSuccess(state, action) {
+            state.newDonationId = action.payload
+            state.createFoodDonationStatus = 'idle';
+        },
+        createFoodDonationFailed(state, action) {
+            state.createFoodDonationError = action.payload;
+            state.createFoodDonationStatus = 'idle';
+        },
+        createFoodDonationReset(state, action) {
+            state.createFoodDonationError = null;
+            state.createFoodDonationStatus = 'idle';
+            state.newDonationId = null;
+        },
         deleteFoodDonationStarted(state, action) {
             state.deleteFoodDonationErrors[action.payload] = null;
             state.deleteFoodDonationStatuses[action.payload] = 'loading';
@@ -49,6 +69,31 @@ const postSlice = createSlice({
     },
 });
 
+const addFoodDonation = (email, newPostDesc) => async dispatch => {
+    dispatch(createFoodDonationStarted());
+    try {
+        const newDocId = await createFoodDonation(email, newPostDesc);
+        dispatch(createFoodDonationSuccess(newDocId));
+        dispatch(fetchFoodDonations(email));
+    } catch (err) {
+        console.error("Error adding document: ", err);
+        dispatch(createFoodDonationFailed(err.toString()));
+    }
+}
+
+const cancelFoodDonation = (postId, email) => async dispatch => {
+    dispatch(deleteFoodDonationStarted(postId));
+    try {
+        await deleteFoodDonation(postId);
+        dispatch(deleteFoodDonationSuccess(postId));
+        dispatch(fetchFoodDonations(email));
+    }
+    catch (err) {
+        console.error(err);
+        dispatch(deleteFoodDonationFailed({ id: postId, error: err.toString() }));
+    }
+}
+
 const fetchFoodDonations = (email) => async dispatch => {
     dispatch(getFoodDonationsStarted());
     try {
@@ -66,20 +111,11 @@ const fetchFoodDonations = (email) => async dispatch => {
     }
 }
 
-const cancelFoodDonation = (postId, email) => async dispatch => {
-    dispatch(deleteFoodDonationStarted(postId));
-    try {
-        await deleteFoodDonation(postId);
-        dispatch(deleteFoodDonationSuccess(postId));
-        dispatch(fetchFoodDonations(email));
-    }
-    catch (err) {
-        console.log(err);
-        dispatch(deleteFoodDonationFailed({ id: postId, error: err.toString() }));
-    }
-}
-
 const { actions, reducer } = postSlice;
-export const { deleteFoodDonationStarted, deleteFoodDonationSuccess, deleteFoodDonationFailed, getFoodDonationsStarted, getFoodDonationsSuccess, getFoodDonationsFailed } = actions;
-export { cancelFoodDonation, fetchFoodDonations };
+export const {
+    createFoodDonationStarted, createFoodDonationSuccess, createFoodDonationFailed, createFoodDonationReset,
+    deleteFoodDonationStarted, deleteFoodDonationSuccess, deleteFoodDonationFailed,
+    getFoodDonationsStarted, getFoodDonationsSuccess, getFoodDonationsFailed
+} = actions;
+export { addFoodDonation, cancelFoodDonation, fetchFoodDonations };
 export default reducer;

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Button, Dimensions, Platform, Text, TextInput } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, Button, Dimensions, Platform, Text, TextInput } from "react-native";
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFoodDonations } from "../../slices/postReducer";
+import { addFoodDonation, createFoodDonationReset, fetchFoodDonations } from "../../slices/postReducer";
 
 let safeMargin;
 
@@ -18,35 +18,38 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function DonatedFoodScreen({ navigation, route }) {
     const { email } = useSelector(
-        (state: RootState) => state.auth
+        (state) => state.auth
+    );
+    const { createFoodDonationError, createFoodDonationStatus, newDonationId } = useSelector(
+        (state) => state.post
     );
     const [newPostDesc, setNewPostDesc] = useState("");
-
     const dispatch = useDispatch();
 
-    const db = firebase.firestore();
-    const postsRef = db.collection('posts');
-
-    const createPost = () => {
-        postsRef.add({
-            description: newPostDesc,
-            foodDonor: email
-        }).then((docRef) => {
-            console.log("Document written with ID: ", docRef.id);
+    useEffect(() => {
+        if (newDonationId) {
+            console.log('New donation confirmed in NewOfferScreen: ', newDonationId);
             setNewPostDesc("");
-            dispatch(fetchFoodDonations(email));
-            navigation.navigate("Donated Food")
-        }).catch((error) => {
-            console.error("Error adding document: ", error);
-            Alert.alert(error.message);
-        });
-    };
+            dispatch(createFoodDonationReset());
+            navigation.navigate("Donated Food");
+        }
+    }, [newDonationId]);
+
+    useEffect(() => {
+        if (createFoodDonationError) {
+            Alert.alert(createFoodDonationError);
+        }
+    }, [createFoodDonationError]);
 
     return (
         <Container>
             <Text>Offer some food!</Text>
             <TextInput placeholder="Post Description" style={{ width: screenWidth * .8, height: 40, borderWidth: 1 }} value={newPostDesc} onChangeText={(text) => { setNewPostDesc(text) }} />
-            <Button title="Create Post" onPress={() => createPost()} />
+            {(createFoodDonationStatus === 'loading') ?
+                <Text>Loading...</Text>
+                :
+                <Button title="Create Post" onPress={() => dispatch(addFoodDonation(email, newPostDesc))} />
+            }
         </Container>
     );
 }
