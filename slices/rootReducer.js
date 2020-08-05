@@ -1,10 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import authSlice from "./authReducer";
-import postSlice from "./postReducer";
+import foodDonationSlice from "./foodDonationReducer";
 
 const rootReducer = combineReducers({
     auth: authSlice,
-    post: postSlice
+    foodDonation: foodDonationSlice
 });
 
 export default rootReducer;

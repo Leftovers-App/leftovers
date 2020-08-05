@@ -9,7 +9,8 @@ const postsRef = db.collection('posts');
 async function createFoodDonation(email, newPostDesc) {
     return postsRef.add({
         description: newPostDesc,
-        foodDonor: email
+        foodDonor: email,
+        status: 'available'
     }).then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
         return docRef.id;

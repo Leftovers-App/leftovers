@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { cancelFoodDonation, fetchFoodDonations } from "../../slices/postReducer";
+import { cancelFoodDonation, fetchFoodDonations } from "../../slices/foodDonationReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { CircleXIcon } from "../../components/Icons";
 
@@ -21,7 +21,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
         (state) => state.auth
     );
     const { deleteFoodDonationStatuses, deleteFoodDonationErrors, foodDonations, getFoodDonationsStatus, getFoodDonationsError } = useSelector(
-        (state) => state.post
+        (state) => state.foodDonation
     );
     const dispatch = useDispatch();
 

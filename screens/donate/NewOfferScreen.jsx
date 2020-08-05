@@ -3,7 +3,7 @@ import { Alert, Button, Dimensions, Platform, Text, TextInput } from "react-nati
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { addFoodDonation, createFoodDonationReset, fetchFoodDonations } from "../../slices/postReducer";
+import { addFoodDonation, createFoodDonationReset, fetchFoodDonations } from "../../slices/foodDonationReducer";
 
 let safeMargin;
 
@@ -20,20 +20,20 @@ export default function DonatedFoodScreen({ navigation, route }) {
     const { email } = useSelector(
         (state) => state.auth
     );
-    const { createFoodDonationError, createFoodDonationStatus, newDonationId } = useSelector(
-        (state) => state.post
+    const { createFoodDonationError, createFoodDonationStatus, newFoodDonationId } = useSelector(
+        (state) => state.foodDonation
     );
     const [newPostDesc, setNewPostDesc] = useState("");
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (newDonationId) {
-            console.log('New donation confirmed in NewOfferScreen: ', newDonationId);
+        if (newFoodDonationId) {
+            console.log('New donation confirmed in NewOfferScreen: ', newFoodDonationId);
             setNewPostDesc("");
-            dispatch(createFoodDonationReset());
             navigation.navigate("Donated Food");
+            dispatch(createFoodDonationReset());
         }
-    }, [newDonationId]);
+    }, [newFoodDonationId]);
 
     useEffect(() => {
         if (createFoodDonationError) {
@@ -43,12 +43,14 @@ export default function DonatedFoodScreen({ navigation, route }) {
 
     return (
         <Container>
-            <Text>Offer some food!</Text>
-            <TextInput placeholder="Post Description" style={{ width: screenWidth * .8, height: 40, borderWidth: 1 }} value={newPostDesc} onChangeText={(text) => { setNewPostDesc(text) }} />
             {(createFoodDonationStatus === 'loading') ?
-                <Text>Loading...</Text>
+                <Text>Creating food offer...</Text>
                 :
-                <Button title="Create Post" onPress={() => dispatch(addFoodDonation(email, newPostDesc))} />
+                <>
+                    <Text>Offer some food!</Text>
+                    <TextInput placeholder="Post Description" style={{ width: screenWidth * .8, height: 40, borderWidth: 1 }} value={newPostDesc} onChangeText={(text) => { setNewPostDesc(text) }} />
+                    <Button title="Create Post" onPress={() => dispatch(addFoodDonation(email, newPostDesc))} />
+                </>
             }
         </Container>
     );

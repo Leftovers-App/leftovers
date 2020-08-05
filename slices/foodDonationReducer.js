@@ -11,11 +11,11 @@ let initialState = {
     foodDonations: [],
     getFoodDonationsError: null,
     getFoodDonationsStatus: "idle",
-    newDonationId: null
+    newFoodDonationId: null
 };
 
-const postSlice = createSlice({
-    name: "post",
+const foodDonationSlice = createSlice({
+    name: "foodDonation",
     initialState,
     reducers: {
         createFoodDonationStarted(state, action) {
@@ -23,7 +23,7 @@ const postSlice = createSlice({
             state.createFoodDonationStatus = 'loading';
         },
         createFoodDonationSuccess(state, action) {
-            state.newDonationId = action.payload
+            state.newFoodDonationId = action.payload
             state.createFoodDonationStatus = 'idle';
         },
         createFoodDonationFailed(state, action) {
@@ -33,7 +33,7 @@ const postSlice = createSlice({
         createFoodDonationReset(state, action) {
             state.createFoodDonationError = null;
             state.createFoodDonationStatus = 'idle';
-            state.newDonationId = null;
+            state.newFoodDonationId = null;
         },
         deleteFoodDonationStarted(state, action) {
             state.deleteFoodDonationErrors[action.payload] = null;
@@ -111,7 +111,7 @@ const fetchFoodDonations = (email) => async dispatch => {
     }
 }
 
-const { actions, reducer } = postSlice;
+const { actions, reducer } = foodDonationSlice;
 export const {
     createFoodDonationStarted, createFoodDonationSuccess, createFoodDonationFailed, createFoodDonationReset,
     deleteFoodDonationStarted, deleteFoodDonationSuccess, deleteFoodDonationFailed,
