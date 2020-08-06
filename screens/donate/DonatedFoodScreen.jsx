@@ -31,13 +31,22 @@ export default function DonatedFoodScreen({ navigation, route }) {
             formattedPosts.push(
                 <SBRow key={doc.id} style={{ marginBottom: 25 }}>
                     <Text>{doc.data.description}</Text>
-                    {(deleteFoodDonationErrors[doc.id]) ?
-                        <Text style={{ color: 'red' }}>Failed</Text>
-                        : (deleteFoodDonationStatuses[doc.id] === 'loading') ?
-                            <Text>Loading</Text>
-                            :
-                            <TouchableOpacity onPress={() => { dispatch(cancelFoodDonation(doc.id, email)); }}><CircleXIcon /></TouchableOpacity>
-                    }
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
+                        {(doc.data.status === 'available') ?
+                            <>
+                                {
+                                    (deleteFoodDonationErrors[doc.id]) ?
+                                        <Text style={{ color: 'red' }}>Failed</Text>
+                                        : (deleteFoodDonationStatuses[doc.id] === 'loading') ?
+                                            <Text>Loading</Text>
+                                            :
+                                            <TouchableOpacity onPress={() => { dispatch(cancelFoodDonation(doc.id, email)); }}><CircleXIcon /></TouchableOpacity>
+                                }
+                            </>
+                            : <></>
+                        }
+                    </View>
                 </SBRow>
             )
         })

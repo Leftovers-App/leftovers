@@ -57,7 +57,7 @@ const foodDonationSlice = createSlice({
                 deleteStatuses[donation.id] = 'idle';
                 deleteErrors[donation.id] = null;
             }
-            state.deleteFoodDonationStatuseses = deleteStatuses;
+            state.deleteFoodDonationStatuses = deleteStatuses;
             state.deleteFoodDonationErrors = deleteErrors;
             state.getFoodDonationsStatus = 'idle';
         },

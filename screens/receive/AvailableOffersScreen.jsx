@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { fetchAvailableOffers } from "../../slices/foodReceptionReducer";
+import { claimOffer, fetchAvailableOffers } from "../../slices/foodReceptionReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { CircleCheckIcon } from "../../components/Icons";
 
 let safeMargin;
 
@@ -16,7 +17,10 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function AvailableOffersScreen({ navigation, route }) {
-    const { availableOffers, getAvailableOffersStatus, getAvailableOffersError } = useSelector(
+    const { email } = useSelector(
+        (state) => state.auth
+    );
+    const { availableOffers, claimOfferErrors, claimOfferStatuses, getAvailableOffersStatus, getAvailableOffersError } = useSelector(
         (state) => state.foodReception
     );
     const dispatch = useDispatch();
@@ -27,6 +31,17 @@ export default function AvailableOffersScreen({ navigation, route }) {
             formattedPosts.push(
                 <SBRow key={doc.id} style={{ marginBottom: 25 }}>
                     <Text>{doc.data.description}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
+                        {
+                            (claimOfferErrors[doc.id]) ?
+                                <Text style={{ color: 'red' }}>Failed</Text>
+                                : (claimOfferStatuses[doc.id] === 'loading') ?
+                                    <Text>Loading</Text>
+                                    :
+                                    <TouchableOpacity onPress={() => { dispatch(claimOffer(doc.id, email)); }}><CircleCheckIcon /></TouchableOpacity>
+                        }
+                    </View>
                 </SBRow>
             )
         })

@@ -42,6 +42,13 @@ async function deleteFoodDonation(postId) {
         });
 }
 
-export { createFoodDonation, deleteFoodDonation, getAvailableOffers, getFoodDonations };
+async function setRecipient(postId, email) {
+    await postsRef.doc(postId).set({ foodRecipient: email, status: 'claimed' }, { merge: true })
+        .then(() => {
+            console.log(`Recipient ${email} successfully set for post with ID ${postId}!`)
+        });
+}
+
+export { createFoodDonation, deleteFoodDonation, getAvailableOffers, getFoodDonations, setRecipient };
 
 export default firebase
