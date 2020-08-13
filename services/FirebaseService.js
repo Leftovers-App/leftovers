@@ -2,6 +2,7 @@ import * as firebase from "firebase";
 import ApiKeys from "../constants/ApiKeys";
 
 if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FirebaseConfig); }
+console.log('Firebase initialized!');
 
 const db = firebase.firestore();
 const postsRef = db.collection('posts');
@@ -34,7 +35,8 @@ async function createFoodDonation(email, newPostDesc) {
     return postsRef.add({
         description: newPostDesc,
         foodDonor: email,
-        status: 'available'
+        status: 'available',
+        created: firebase.firestore.Timestamp.now()
     }).then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
         return docRef.id;
@@ -57,7 +59,11 @@ async function getAvailableOffers() {
 }
 
 async function setRecipient(postId, email) {
-    await postsRef.doc(postId).set({ foodRecipient: email, status: 'claimed' }, { merge: true })
+    await postsRef.doc(postId).set({
+        foodRecipient: email,
+        status: 'claimed',
+        claimed: firebase.firestore.Timestamp.now()
+    }, { merge: true })
         .then(() => {
             console.log(`Recipient ${email} successfully set for post with ID ${postId}!`)
         });
@@ -75,15 +81,82 @@ async function getReceivedFood(email) {
 }
 
 async function removeRecipient(postId) {
-    await postsRef.doc(postId).set({ foodRecipient: '', status: 'available' }, { merge: true })
+    await postsRef.doc(postId).set({
+        foodRecipient: null,
+        status: 'available',
+        claimed: null
+    }, { merge: true })
         .then(() => {
             console.log(`Recipient successfully removed for post with ID ${postId}!`)
         });
 }
 
+// -----------
+// Delivery
+// -----------
+
+// FoodDeliveredScreen
+
+async function getDeliveries(email) {
+    const postsQuery = postsRef.where('transporter', '==', email);
+    return postsQuery.get()
+        .then(posts => {
+            console.log('Retrieved received food!');
+            return posts;
+        });
+}
+
+
+// JobAssignmentScreen
+
+async function acceptJob(postId, email) {
+    await postsRef.doc(postId).set({
+        transporter: email,
+        status: 'assigned',
+        assigned: firebase.firestore.Timestamp.now(),
+        // pendingAssignmentSince: null
+    }, { merge: true })
+        .then(() => {
+            console.log(`Transporter ${email} accepted job with ID ${postId}!`);
+        });
+}
+
+async function declineJob(postId) {
+    await postsRef.doc(postId).set({
+        status: 'claimed',
+        // pendingAssignmentSince: null
+    }, { merge: true })
+        .then(() => {
+            console.log(`Transporter declined job with ID ${postId}!`);
+        });
+}
+
+async function setJobPending(postId) {
+    await postsRef.doc(postId).set({
+        status: 'pending assignment',
+        // pendingAssignmentSince: firebase.firestore.Timestamp.now()
+    }, { merge: true })
+        .then(() => {
+            console.log(`Set status pending for post with ID ${postId}!`)
+        });
+}
+
+async function removeTransporter(postId) {
+    await postsRef.doc(postId).set({
+        transporter: null,
+        status: 'claimed',
+        assigned: null
+    }, { merge: true })
+        .then(() => {
+            console.log(`Delivery canceled for post with ID ${postId}!`)
+        });
+}
+
 export {
+    postsRef,
     createFoodDonation, deleteFoodDonation, getFoodDonations,
-    getAvailableOffers, getReceivedFood, setRecipient, removeRecipient
+    getAvailableOffers, getReceivedFood, setRecipient, removeRecipient,
+    acceptJob, declineJob, getDeliveries, setJobPending, removeTransporter
 };
 
 export default firebase

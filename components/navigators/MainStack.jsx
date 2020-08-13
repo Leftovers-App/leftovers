@@ -16,9 +16,11 @@ export default function MainStack() {
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
+            console.log('User present - signing in...');
             dispatch(signIn({ email: user['email'] }));
         }
         else {
+            console.log('User not present - signing out...');
             dispatch(signOut());
         }
     });

@@ -99,9 +99,13 @@ const fetchFoodDonations = (email) => async dispatch => {
         const posts = await getFoodDonations(email);
         let foodDonations = [];
         posts.forEach(doc => {
+            let postData = doc.data();
+            delete postData['claimed'];
+            delete postData['pendingAssignmentSince'];
+            delete postData['created'];
             foodDonations.push({
                 id: doc.id,
-                data: doc.data()
+                data: postData
             });
         })
         dispatch(getFoodDonationsSuccess(foodDonations));

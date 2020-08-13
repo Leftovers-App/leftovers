@@ -118,9 +118,13 @@ const fetchAvailableOffers = () => async dispatch => {
         const posts = await getAvailableOffers();
         let availableOffers = [];
         posts.forEach(doc => {
+            let postData = doc.data();
+            delete postData['claimed'];
+            delete postData['created'];
+            delete postData['pendingAssignmentSince'];
             availableOffers.push({
                 id: doc.id,
-                data: doc.data()
+                data: postData
             });
         })
         dispatch(getAvailableOffersSuccess(availableOffers));
@@ -135,9 +139,13 @@ const fetchReceivedFood = (email) => async dispatch => {
         const posts = await getReceivedFood(email);
         let receivedFood = [];
         posts.forEach(doc => {
+            let postData = doc.data();
+            delete postData['claimed'];
+            delete postData['created'];
+            delete postData['pendingAssignmentSince'];
             receivedFood.push({
                 id: doc.id,
-                data: doc.data()
+                data: postData
             });
         })
         dispatch(getReceivedFoodSuccess(receivedFood));
