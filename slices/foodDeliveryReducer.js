@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { acceptJob, declineJob, getDeliveries, postsRef, setJobPending, removeTransporter } from "../services/FirebaseService";
+import { convertTimestamps } from "../services/TimestampUtil";
 
 let initialState = {
     cancelJobError: null,
@@ -113,10 +114,7 @@ const fetchDeliveries = (email) => async dispatch => {
         const posts = await getDeliveries(email);
         let deliveries = [];
         posts.forEach(doc => {
-            let postData = doc.data();
-            delete postData['claimed'];
-            delete postData['pendingAssignmentSince'];
-            delete postData['created'];
+            let postData = convertTimestamps(doc.data());
             deliveries.push({
                 id: doc.id,
                 data: postData
@@ -139,21 +137,14 @@ const fetchAvailableJobs = () => async (dispatch, getState) => {
                 if (currentJob) {
                     return
                 }
-                // console.log('snapshot retrieved!!!');
                 let availableJobs = [];
                 posts.forEach(doc => {
-                    let postData = doc.data();
-                    delete postData['claimed'];
-                    delete postData['pendingAssignmentSince'];
-                    delete postData['created'];
+                    let postData = convertTimestamps(doc.data());
                     availableJobs.push({
                         id: doc.id,
                         data: postData
                     });
                 });
-                console.log(`length of available jobs snapshot: ${availableJobs.length}`);
-                // console.log('available jobs:');
-                // console.log(availableJobs);
                 dispatch(getAvailableJobsSuccess(availableJobs));
                 dispatch(setPendingJob());
             });
