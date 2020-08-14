@@ -59,11 +59,11 @@ async function getAvailableOffers() {
 }
 
 async function setRecipient(postId, email) {
-    await postsRef.doc(postId).set({
+    await postsRef.doc(postId).update({
         foodRecipient: email,
         status: 'claimed',
         claimed: firebase.firestore.Timestamp.now()
-    }, { merge: true })
+    })
         .then(() => {
             console.log(`Recipient ${email} successfully set for post with ID ${postId}!`)
         });
@@ -81,11 +81,11 @@ async function getReceivedFood(email) {
 }
 
 async function removeRecipient(postId) {
-    await postsRef.doc(postId).set({
+    await postsRef.doc(postId).update({
         foodRecipient: null,
         status: 'available',
         claimed: null
-    }, { merge: true })
+    })
         .then(() => {
             console.log(`Recipient successfully removed for post with ID ${postId}!`)
         });
@@ -110,43 +110,43 @@ async function getDeliveries(email) {
 // JobAssignmentScreen
 
 async function acceptJob(postId, email) {
-    await postsRef.doc(postId).set({
+    await postsRef.doc(postId).update({
         transporter: email,
         status: 'assigned',
         assigned: firebase.firestore.Timestamp.now(),
         // pendingAssignmentSince: null
-    }, { merge: true })
+    })
         .then(() => {
             console.log(`Transporter ${email} accepted job with ID ${postId}!`);
         });
 }
 
 async function declineJob(postId) {
-    await postsRef.doc(postId).set({
+    await postsRef.doc(postId).update({
         status: 'claimed',
         // pendingAssignmentSince: null
-    }, { merge: true })
+    })
         .then(() => {
             console.log(`Transporter declined job with ID ${postId}!`);
         });
 }
 
 async function setJobPending(postId) {
-    await postsRef.doc(postId).set({
+    await postsRef.doc(postId).update({
         status: 'pending assignment',
         // pendingAssignmentSince: firebase.firestore.Timestamp.now()
-    }, { merge: true })
+    })
         .then(() => {
             console.log(`Set status pending for post with ID ${postId}!`)
         });
 }
 
 async function removeTransporter(postId) {
-    await postsRef.doc(postId).set({
+    await postsRef.doc(postId).update({
         transporter: null,
         status: 'claimed',
         assigned: null
-    }, { merge: true })
+    })
         .then(() => {
             console.log(`Delivery canceled for post with ID ${postId}!`)
         });

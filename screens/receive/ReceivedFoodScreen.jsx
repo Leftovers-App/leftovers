@@ -38,8 +38,9 @@ export default function ReceivedFoodScreen({ navigation, route }) {
                                 <Text style={{ color: 'red' }}>Failed</Text>
                                 : (cancelClaimStatuses[doc.id] === 'loading') ?
                                     <Text>Loading</Text>
-                                    :
-                                    <TouchableOpacity onPress={() => { dispatch(cancelClaim(doc.id, email)); }}><CircleXIcon /></TouchableOpacity>
+                                    : (doc.data.status === "claimed") ?
+                                        <TouchableOpacity onPress={() => { dispatch(cancelClaim(doc.id, email)); }}><CircleXIcon /></TouchableOpacity>
+                                        : <></>
                         }
                     </View>
                 </SBRow>

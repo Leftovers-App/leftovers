@@ -79,8 +79,6 @@ const foodDeliverySlice = createSlice({
             state.setJobPendingStatus = 'loading';
             state.setJobPendingError = null;
             state.pendingJob = action.payload;
-            console.log('setting job pending:');
-            console.log(state.pendingJob);
             let seenJobs = state.seenJobs;
             seenJobs[action.payload.id] = action.payload;
             state.seenJobs = seenJobs;
@@ -130,7 +128,8 @@ const fetchDeliveries = (email) => async dispatch => {
     }
 }
 
-const fetchAvailableJobs = (currentJob) => async dispatch => {
+const fetchAvailableJobs = () => async (dispatch, getState) => {
+    const { currentJob } = getState().foodDelivery;
     dispatch(getAvailableJobsStarted());
     try {
         // console.log('Starting getAvailableJobs()...');
@@ -143,9 +142,6 @@ const fetchAvailableJobs = (currentJob) => async dispatch => {
                 // console.log('snapshot retrieved!!!');
                 let availableJobs = [];
                 posts.forEach(doc => {
-                    console.log(`${doc.id}:`);
-                    console.log(doc.data());
-                    console.log();
                     let postData = doc.data();
                     delete postData['claimed'];
                     delete postData['pendingAssignmentSince'];
@@ -155,9 +151,11 @@ const fetchAvailableJobs = (currentJob) => async dispatch => {
                         data: postData
                     });
                 });
+                console.log(`length of available jobs snapshot: ${availableJobs.length}`);
                 // console.log('available jobs:');
                 // console.log(availableJobs);
                 dispatch(getAvailableJobsSuccess(availableJobs));
+                dispatch(setPendingJob());
             });
     } catch (err) {
         console.error(err.toString());
@@ -184,7 +182,8 @@ const performJobAction = (pendingJob, email, accepted) => async dispatch => {
     }
 }
 
-const setPendingJob = (currentJob, pendingJob, availableJobs, seenJobs) => async dispatch => {
+const setPendingJob = () => async (dispatch, getState) => {
+    const { currentJob, pendingJob, availableJobs, seenJobs } = getState().foodDelivery
     if (currentJob) { return }
     else if (pendingJob) { return }
     else {
@@ -193,7 +192,6 @@ const setPendingJob = (currentJob, pendingJob, availableJobs, seenJobs) => async
             for (let i = 0; i < availableJobs.length; i++) {
                 if (!(availableJobs[i].id in seenJobs)) {
                     jobToSet = availableJobs[i];
-                    console.log(jobToSet);
                     dispatch(setJobPendingStarted(jobToSet));
                     await setJobPending(jobToSet.id);
                     console.log('Set job pending!');
