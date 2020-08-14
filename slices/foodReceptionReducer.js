@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as firebase from "firebase";
 import { getAvailableOffers, getReceivedFood, removeRecipient, setRecipient } from "../services/FirebaseService";
+import { convertTimestamps } from "../services/TimestampUtil";
 
 let initialState = {
     availableOffers: [],
@@ -118,10 +119,7 @@ const fetchAvailableOffers = () => async dispatch => {
         const posts = await getAvailableOffers();
         let availableOffers = [];
         posts.forEach(doc => {
-            let postData = doc.data();
-            delete postData['claimed'];
-            delete postData['created'];
-            delete postData['pendingAssignmentSince'];
+            let postData = convertTimestamps(doc.data());
             availableOffers.push({
                 id: doc.id,
                 data: postData
@@ -139,10 +137,7 @@ const fetchReceivedFood = (email) => async dispatch => {
         const posts = await getReceivedFood(email);
         let receivedFood = [];
         posts.forEach(doc => {
-            let postData = doc.data();
-            delete postData['claimed'];
-            delete postData['created'];
-            delete postData['pendingAssignmentSince'];
+            let postData = convertTimestamps(doc.data());
             receivedFood.push({
                 id: doc.id,
                 data: postData

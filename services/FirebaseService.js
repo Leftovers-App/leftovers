@@ -36,7 +36,7 @@ async function createFoodDonation(email, newPostDesc) {
         description: newPostDesc,
         foodDonor: email,
         status: 'available',
-        created: firebase.firestore.Timestamp.now()
+        created: new Date()
     }).then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
         return docRef.id;
@@ -62,7 +62,7 @@ async function setRecipient(postId, email) {
     await postsRef.doc(postId).update({
         foodRecipient: email,
         status: 'claimed',
-        claimed: firebase.firestore.Timestamp.now()
+        claimed: new Date()
     })
         .then(() => {
             console.log(`Recipient ${email} successfully set for post with ID ${postId}!`)
@@ -113,8 +113,8 @@ async function acceptJob(postId, email) {
     await postsRef.doc(postId).update({
         transporter: email,
         status: 'assigned',
-        assigned: firebase.firestore.Timestamp.now(),
-        // pendingAssignmentSince: null
+        assigned: new Date(),
+        pendingAssignmentSince: null
     })
         .then(() => {
             console.log(`Transporter ${email} accepted job with ID ${postId}!`);
@@ -124,7 +124,7 @@ async function acceptJob(postId, email) {
 async function declineJob(postId) {
     await postsRef.doc(postId).update({
         status: 'claimed',
-        // pendingAssignmentSince: null
+        pendingAssignmentSince: null
     })
         .then(() => {
             console.log(`Transporter declined job with ID ${postId}!`);
@@ -134,7 +134,7 @@ async function declineJob(postId) {
 async function setJobPending(postId) {
     await postsRef.doc(postId).update({
         status: 'pending assignment',
-        // pendingAssignmentSince: firebase.firestore.Timestamp.now()
+        pendingAssignmentSince: new Date()
     })
         .then(() => {
             console.log(`Set status pending for post with ID ${postId}!`)

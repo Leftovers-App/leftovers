@@ -29,7 +29,6 @@ export default function JobAssignmentScreen({ navigation, route }) {
 
     useEffect(() => { if (!currentJob) { dispatch(fetchAvailableJobs(currentJob)); } }, [])
     useEffect(() => { if (cancelJobError) { Alert.alert(cancelJobError); } }, [cancelJobError])
-    // useEffect(() => { dispatch(setPendingJob(currentJob, pendingJob, availableJobs, seenJobs)); }, [availableJobs])
 
     return (
         <Container>

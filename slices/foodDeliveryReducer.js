@@ -130,7 +130,6 @@ const fetchAvailableJobs = () => async (dispatch, getState) => {
     const { currentJob } = getState().foodDelivery;
     dispatch(getAvailableJobsStarted());
     try {
-        // console.log('Starting getAvailableJobs()...');
         postsRef.where('status', '==', 'claimed').orderBy('claimed', 'desc').limit(10)
             .onSnapshot((posts) => {
                 // If current job, end subscription
