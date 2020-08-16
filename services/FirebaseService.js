@@ -29,6 +29,16 @@ async function getFoodDonations(email) {
         });
 }
 
+async function confirmPickup(postId) {
+    await postsRef.doc(postId).update({
+        status: 'picked up',
+        pickedUp: new Date()
+    })
+        .then(() => {
+            console.log(`Status changed to "picked up" for post with ID ${postId}!`)
+        });
+}
+
 // NewOfferScreen
 
 async function createFoodDonation(email, newPostDesc) {
