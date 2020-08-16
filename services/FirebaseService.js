@@ -29,14 +29,13 @@ async function getFoodDonations(email) {
         });
 }
 
-async function confirmPickup(postId) {
+async function setStatusPickedUp(postId) {
     await postsRef.doc(postId).update({
         status: 'picked up',
         pickedUp: new Date()
-    })
-        .then(() => {
-            console.log(`Status changed to "picked up" for post with ID ${postId}!`)
-        });
+    }).then(() => {
+        console.log(`Status changed to "picked up" for post with ID ${postId}!`)
+    });
 }
 
 // NewOfferScreen
@@ -164,7 +163,7 @@ async function removeTransporter(postId) {
 
 export {
     postsRef,
-    createFoodDonation, deleteFoodDonation, getFoodDonations,
+    createFoodDonation, deleteFoodDonation, getFoodDonations, setStatusPickedUp,
     getAvailableOffers, getReceivedFood, setRecipient, removeRecipient,
     acceptJob, declineJob, getDeliveries, setJobPending, removeTransporter
 };

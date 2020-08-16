@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as firebase from "firebase";
-import { createFoodDonation, deleteFoodDonation, getFoodDonations } from "../services/FirebaseService";
+import { createFoodDonation, deleteFoodDonation, getFoodDonations, setStatusPickedUp } from "../services/FirebaseService";
 import { convertTimestamps } from "../services/TimestampUtil";
 
 let initialState = {
     createFoodDonationError: null,
     createFoodDonationStatus: 'idle',
+    confirmPickupErrors: {},
+    confirmPickupStatuses: {},
     deleteFoodDonationErrors: {},
     deleteFoodDonationStatuses: {},
     foodDonations: [],
@@ -34,6 +36,17 @@ const foodDonationSlice = createSlice({
             state.createFoodDonationError = null;
             state.createFoodDonationStatus = 'idle';
             state.newFoodDonationId = null;
+        },
+        confirmPickupStarted(state, action) {
+            state.confirmPickupErrors[action.payload] = null;
+            state.confirmPickupStatuses[action.payload] = 'loading';
+        },
+        confirmPickupSuccess(state, action) {
+            state.confirmPickupStatuses[action.payload] = 'idle';
+        },
+        confirmPickupFailed(state, action) {
+            state.confirmPickupErrors[action.payload.id] = action.payload.error;
+            state.confirmPickupStatuses[action.payload.id] = 'idle';
         },
         deleteFoodDonationStarted(state, action) {
             state.deleteFoodDonationErrors[action.payload] = null;
@@ -94,6 +107,19 @@ const cancelFoodDonation = (postId, email) => async dispatch => {
     }
 }
 
+const confirmPickup = (postId, email) => async dispatch => {
+    dispatch(confirmPickupStarted(postId));
+    try {
+        await setStatusPickedUp(postId);
+        dispatch(confirmPickupSuccess(postId));
+        dispatch(fetchFoodDonations(email));
+    }
+    catch (err) {
+        console.error(err);
+        dispatch(confirmPickupFailed({ id: postId, error: err.toString() }));
+    }
+}
+
 const fetchFoodDonations = (email) => async dispatch => {
     dispatch(getFoodDonationsStarted());
     try {
@@ -115,8 +141,9 @@ const fetchFoodDonations = (email) => async dispatch => {
 const { actions, reducer } = foodDonationSlice;
 export const {
     createFoodDonationStarted, createFoodDonationSuccess, createFoodDonationFailed, createFoodDonationReset,
+    confirmPickupStarted, confirmPickupSuccess, confirmPickupFailed,
     deleteFoodDonationStarted, deleteFoodDonationSuccess, deleteFoodDonationFailed,
     getFoodDonationsStarted, getFoodDonationsSuccess, getFoodDonationsFailed
 } = actions;
-export { addFoodDonation, cancelFoodDonation, fetchFoodDonations };
+export { addFoodDonation, cancelFoodDonation, confirmPickup, fetchFoodDonations };
 export default reducer;
