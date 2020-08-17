@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { cancelFoodDonation, fetchFoodDonations } from "../../slices/foodDonationReducer";
+import { cancelFoodDonation, confirmPickup, fetchFoodDonations } from "../../slices/foodDonationReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { CircleXIcon } from "../../components/Icons";
+import { CheckIcon, CircleXIcon } from "../../components/Icons";
 
 let safeMargin;
 
@@ -20,7 +20,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
     const { email } = useSelector(
         (state) => state.auth
     );
-    const { deleteFoodDonationStatuses, deleteFoodDonationErrors, foodDonations, getFoodDonationsStatus, getFoodDonationsError } = useSelector(
+    const { confirmPickupStatuses, confirmPickupErrors, deleteFoodDonationStatuses, deleteFoodDonationErrors, foodDonations, getFoodDonationsStatus, getFoodDonationsError } = useSelector(
         (state) => state.foodDonation
     );
     const dispatch = useDispatch();
@@ -44,7 +44,18 @@ export default function DonatedFoodScreen({ navigation, route }) {
                                             <TouchableOpacity onPress={() => { dispatch(cancelFoodDonation(doc.id, email)); }}><CircleXIcon /></TouchableOpacity>
                                 }
                             </>
-                            : <></>
+                            : (doc.data.status === "assigned") ?
+                                <>
+                                    {
+                                        (confirmPickupErrors[doc.id]) ?
+                                            <Text style={{ color: 'red' }}>Failed</Text>
+                                            : (confirmPickupStatuses[doc.id] === 'loading') ?
+                                                <Text>Loading</Text>
+                                                :
+                                                <TouchableOpacity onPress={() => { dispatch(confirmPickup(doc.id, email)); }}><CheckIcon /></TouchableOpacity>
+                                    }
+                                </>
+                                : <></>
                         }
                     </View>
                 </SBRow>

@@ -100,6 +100,15 @@ async function removeRecipient(postId) {
         });
 }
 
+async function setStatusDelivered(postId) {
+    await postsRef.doc(postId).update({
+        status: 'delivered',
+        delivered: new Date()
+    }).then(() => {
+        console.log(`Status changed to "delivered" for post with ID ${postId}!`)
+    });
+}
+
 // -----------
 // Delivery
 // -----------

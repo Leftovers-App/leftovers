@@ -1,4 +1,4 @@
-const allTimestamps = ["created", "claimed", "pendingAssignmentSince", "assigned"]
+const allTimestamps = ["created", "claimed", "pendingAssignmentSince", "assigned", "pickedUp", "delivered"]
 
 const convertTimestamps = (postData) => {
     let updatedData = postData;
