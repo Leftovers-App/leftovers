@@ -3,6 +3,7 @@ import { Alert, Button, Dimensions, Platform, Text, View } from "react-native";
 import styled from "styled-components/native";
 import { useDispatch, useSelector } from "react-redux";
 import { cancelJob, cancelJobAcceptError, fetchAvailableJobs, performJobAction, setPendingJob } from "../../slices/foodDeliveryReducer";
+import { declineJob } from "../../services/FirebaseService";
 
 let safeMargin;
 
