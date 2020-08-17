@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as firebase from "firebase";
-import { getAvailableOffers, getReceivedFood, removeRecipient, setRecipient } from "../services/FirebaseService";
+import { getAvailableOffers, getReceivedFood, removeRecipient, setRecipient, setStatusDelivered } from "../services/FirebaseService";
 import { convertTimestamps } from "../services/TimestampUtil";
 
 let initialState = {
     availableOffers: [],
     cancelClaimErrors: {},
     cancelClaimStatuses: {},
+    confirmDeliveryErrors: {},
+    confirmDeliveryStatuses: {},
     claimOfferErrors: {},
     claimOfferStatuses: {},
     getAvailableOffersError: null,
@@ -41,6 +43,17 @@ const foodReceptionSlice = createSlice({
         claimOfferFailed(state, action) {
             state.claimOfferErrors[action.payload.id] = action.payload.error;
             state.claimOfferStatuses[action.payload.id] = 'idle';
+        },
+        confirmDeliveryStarted(state, action) {
+            state.confirmDeliveryErrors[action.payload] = null;
+            state.confirmDeliveryStatuses[action.payload] = 'loading';
+        },
+        confirmDeliverySuccess(state, action) {
+            state.confirmDeliveryStatuses[action.payload] = 'idle';
+        },
+        confirmDeliveryFailed(state, action) {
+            state.confirmDeliveryErrors[action.payload.id] = action.payload.error;
+            state.confirmDeliveryStatuses[action.payload.id] = 'idle';
         },
         getAvailableOffersStarted(state) {
             state.getAvailableOffersError = null;
@@ -113,6 +126,19 @@ const claimOffer = (postId, email) => async dispatch => {
     }
 }
 
+const confirmDelivery = (postId, email) => async dispatch => {
+    dispatch(confirmDeliveryStarted(postId));
+    try {
+        await setStatusDelivered(postId);
+        dispatch(confirmDeliverySuccess(postId));
+        dispatch(fetchReceivedFood(email));
+    }
+    catch (err) {
+        console.error(err);
+        dispatch(confirmDeliveryFailed({ id: postId, error: err.toString() }));
+    }
+}
+
 const fetchAvailableOffers = () => async dispatch => {
     dispatch(getAvailableOffersStarted());
     try {
@@ -153,8 +179,9 @@ const { actions, reducer } = foodReceptionSlice;
 export const {
     cancelClaimStarted, cancelClaimSuccess, cancelClaimFailed,
     claimOfferStarted, claimOfferSuccess, claimOfferFailed,
+    confirmDeliveryStarted, confirmDeliverySuccess, confirmDeliveryFailed,
     getAvailableOffersStarted, getAvailableOffersSuccess, getAvailableOffersFailed,
     getReceivedFoodStarted, getReceivedFoodSuccess, getReceivedFoodFailed
 } = actions;
-export { cancelClaim, claimOffer, fetchAvailableOffers, fetchReceivedFood };
+export { cancelClaim, claimOffer, confirmDelivery, fetchAvailableOffers, fetchReceivedFood };
 export default reducer;

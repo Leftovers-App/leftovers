@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { cancelClaim, fetchReceivedFood } from "../../slices/foodReceptionReducer";
+import { cancelClaim, confirmDelivery, fetchReceivedFood } from "../../slices/foodReceptionReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { CircleXIcon } from "../../components/Icons";
+import { CheckSquareIcon, CircleXIcon } from "../../components/Icons";
 
 let safeMargin;
 
@@ -20,7 +20,7 @@ export default function ReceivedFoodScreen({ navigation, route }) {
     const { email } = useSelector(
         (state) => state.auth
     );
-    const { receivedFood, cancelClaimErrors, cancelClaimStatuses, getReceivedFoodStatus, getReceivedFoodError } = useSelector(
+    const { cancelClaimErrors, cancelClaimStatuses, confirmDeliveryStatuses, confirmDeliveryErrors, getReceivedFoodError, getReceivedFoodStatus, receivedFood } = useSelector(
         (state) => state.foodReception
     );
     const dispatch = useDispatch();
@@ -40,7 +40,17 @@ export default function ReceivedFoodScreen({ navigation, route }) {
                                     <Text>Loading</Text>
                                     : (doc.data.status === "claimed") ?
                                         <TouchableOpacity onPress={() => { dispatch(cancelClaim(doc.id, email)); }}><CircleXIcon /></TouchableOpacity>
-                                        : <></>
+                                        : (doc.data.status === "picked up") ?
+                                            <>
+                                                {(confirmDeliveryErrors[doc.id]) ?
+                                                    <Text style={{ color: 'red' }}>Failed</Text>
+                                                    : (confirmDeliveryStatuses[doc.id] === 'loading') ?
+                                                        <Text>Loading</Text>
+                                                        :
+                                                        <TouchableOpacity onPress={() => { dispatch(confirmDelivery(doc.id, email)); }}><CheckSquareIcon /></TouchableOpacity>
+                                                }
+                                            </>
+                                            : <></>
                         }
                     </View>
                 </SBRow>

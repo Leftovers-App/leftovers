@@ -173,7 +173,7 @@ async function removeTransporter(postId) {
 export {
     postsRef,
     createFoodDonation, deleteFoodDonation, getFoodDonations, setStatusPickedUp,
-    getAvailableOffers, getReceivedFood, setRecipient, removeRecipient,
+    getAvailableOffers, getReceivedFood, setRecipient, removeRecipient, setStatusDelivered,
     acceptJob, declineJob, getDeliveries, setJobPending, removeTransporter
 };
 
