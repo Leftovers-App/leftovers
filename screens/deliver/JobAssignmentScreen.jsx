@@ -59,8 +59,8 @@ export default function JobAssignmentScreen({ navigation, route }) {
                                         <Text>Recipient: {pendingJob.data.foodRecipient}</Text>
                                         <Text>Description: {pendingJob.data.description}</Text>
                                         <View style={{ width: screenWidth * .8, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                                            <Button title="Accept" onPress={() => dispatch(performJobAction(pendingJob, email, true))} />
-                                            <Button title="Decline" onPress={() => dispatch(performJobAction(pendingJob, email, false))} />
+                                            <Button title="Accept" onPress={() => dispatch(performJobAction(true))} />
+                                            <Button title="Decline" onPress={() => dispatch(performJobAction(false))} />
                                         </View>
                                     </>
                                     :
