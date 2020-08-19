@@ -44,7 +44,6 @@ const foodDeliverySlice = createSlice({
             state.jobActionStatus = 'loading';
         },
         jobActionSuccess(state, action) {
-            state.currentJob = action.payload;
             state.pendingJob = null;
             state.jobActionStatus = 'idle';
         },
@@ -75,6 +74,9 @@ const foodDeliverySlice = createSlice({
         getAvailableJobsFailed(state, action) {
             state.getAvailableJobsError = action.payload;
             state.getAvailableJobsStatus = 'idle';
+        },
+        setCurrentJob(state, action) {
+            state.currentJob = action.payload;
         },
         setJobPendingStarted(state, action) {
             state.setJobPendingStatus = 'loading';
@@ -108,20 +110,32 @@ const cancelJob = (postId, seenJobs, currentJob, pendingJob) => async dispatch =
     }
 }
 
-const fetchDeliveries = (email) => async dispatch => {
+const fetchDeliveries = () => async (dispatch, getState) => {
+    const { email } = getState().auth;
     dispatch(getDeliveriesStarted());
     try {
-        const posts = await getDeliveries(email);
-        let deliveries = [];
-        posts.forEach(doc => {
-            let postData = convertTimestamps(doc.data());
-            deliveries.push({
-                id: doc.id,
-                data: postData
+        postsRef.where("transporter", "==", email)
+            .onSnapshot((posts) => {
+                let deliveries = [];
+                let currentJob = null;
+                posts.forEach(doc => {
+                    let postData = convertTimestamps(doc.data());
+                    let delivery = {
+                        id: doc.id,
+                        data: postData
+                    };
+                    deliveries.push(delivery);
+
+                    const status = delivery.data.status;
+                    if (status === "assigned" || status === "picked up") {
+                        currentJob = delivery;
+                    }
+                });
+                dispatch(setCurrentJob(currentJob));
+                dispatch(getDeliveriesSuccess(deliveries));
             });
-        })
-        dispatch(getDeliveriesSuccess(deliveries));
     } catch (err) {
+        console.error(err.toString());
         dispatch(getDeliveriesFailed(err.toString()));
     }
 }
