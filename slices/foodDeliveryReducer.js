@@ -97,12 +97,12 @@ const foodDeliverySlice = createSlice({
     },
 });
 
-const cancelJob = (postId, seenJobs, currentJob, pendingJob) => async dispatch => {
+const cancelJob = (postId) => async dispatch => {
     dispatch(cancelJobStarted(postId));
     try {
         await removeTransporter(postId);
         dispatch(cancelJobSuccess());
-        dispatch(fetchAvailableJobs(seenJobs, currentJob, pendingJob));
+        dispatch(fetchAvailableJobs());
     }
     catch (err) {
         console.error(err);
@@ -167,17 +167,20 @@ const fetchAvailableJobs = () => async (dispatch, getState) => {
     }
 }
 
-const performJobAction = (pendingJob, email, accepted) => async dispatch => {
+const performJobAction = (accepted) => async (dispatch, getState) => {
+    const { email } = getState().auth;
+    const { pendingJob } = getState().foodDelivery;
+
     dispatch(jobActionStarted());
     const postId = pendingJob.id;
     try {
         if (accepted) {
             await acceptJob(postId, email);
-            dispatch(jobActionSuccess(pendingJob));
+            dispatch(jobActionSuccess());
         }
         else {
             await declineJob(postId);
-            dispatch(jobActionSuccess(null));
+            dispatch(jobActionSuccess());
         }
     }
     catch (err) {
@@ -217,7 +220,8 @@ export const {
     jobActionStarted, jobActionSuccess, jobActionFailed,
     getDeliveriesStarted, getDeliveriesSuccess, getDeliveriesFailed,
     getAvailableJobsStarted, getAvailableJobsSuccess, getAvailableJobsFailed,
-    setJobPendingStarted, setJobPendingSuccess, setJobPendingFailed
+    setJobPendingStarted, setJobPendingSuccess, setJobPendingFailed,
+    setCurrentJob
 } = actions;
 export { cancelJob, fetchDeliveries, fetchAvailableJobs, performJobAction, setPendingJob };
 export default reducer;
