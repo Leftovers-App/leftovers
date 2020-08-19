@@ -16,3 +16,16 @@ __________________________
 - Remove all instances where state for currentJob is set in local methods
 
 - If need to track who is pending assignment, store "pendingTransporter" = email in the post itself
+
+______________________________
+
+TO-DO (8/20/2020)
+_________________
+
+- move fetchDeliveries call to MainStack
+
+- add query listener for donations, call in MainStack
+
+- add query listener for receptions, call in MainStack
+
+- fix all changed params, remove all unnecessary calls and state changes
