@@ -126,8 +126,7 @@ const fetchDeliveries = () => async (dispatch, getState) => {
                     };
                     deliveries.push(delivery);
 
-                    const status = delivery.data.status;
-                    if (status === "assigned" || status === "picked up") {
+                    if (delivery.data.status !== "delivered") {
                         currentJob = delivery;
                     }
                 });

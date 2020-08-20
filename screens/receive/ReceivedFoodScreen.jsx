@@ -61,7 +61,7 @@ export default function ReceivedFoodScreen({ navigation, route }) {
 
     useEffect(() => {
         if (email) {
-            dispatch(fetchReceivedFood(email));
+            dispatch(fetchReceivedFood());
         }
     }, []);
 
@@ -69,7 +69,6 @@ export default function ReceivedFoodScreen({ navigation, route }) {
         <Container>
             <SBRow>
                 <Text>Received Food:</Text>
-                <Button title="Reload" onPress={() => { dispatch(fetchReceivedFood(email)); }} />
             </SBRow>
             <View style={{ height: screenHeight * .5 }}>
                 <ScrollView>

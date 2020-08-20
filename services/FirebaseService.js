@@ -71,15 +71,6 @@ async function setRecipient(postId, email) {
 
 // ReceivedFoodScreen
 
-async function getReceivedFood(email) {
-    const postsQuery = postsRef.where('foodRecipient', '==', email);
-    return postsQuery.get()
-        .then(posts => {
-            console.log('Retrieved received food!');
-            return posts;
-        });
-}
-
 async function removeRecipient(postId) {
     await postsRef.doc(postId).update({
         foodRecipient: null,
@@ -152,7 +143,7 @@ async function removeTransporter(postId) {
 export {
     postsRef,
     createFoodDonation, deleteFoodDonation, setStatusPickedUp,
-    getAvailableOffers, getReceivedFood, setRecipient, removeRecipient, setStatusDelivered,
+    getAvailableOffers, setRecipient, removeRecipient, setStatusDelivered,
     acceptJob, declineJob, setJobPending, removeTransporter
 };
 

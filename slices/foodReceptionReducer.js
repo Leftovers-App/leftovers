@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as firebase from "firebase";
-import { getAvailableOffers, getReceivedFood, removeRecipient, setRecipient, setStatusDelivered } from "../services/FirebaseService";
+import { getAvailableOffers, postsRef, removeRecipient, setRecipient, setStatusDelivered } from "../services/FirebaseService";
 import { convertTimestamps } from "../services/TimestampUtil";
 
 let initialState = {
+    activeClaims: [],
     availableOffers: [],
     cancelClaimErrors: {},
     cancelClaimStatuses: {},
@@ -94,6 +95,9 @@ const foodReceptionSlice = createSlice({
         getReceivedFoodFailed(state, action) {
             state.getReceivedFoodError = action.payload;
             state.getReceivedFoodStatus = 'idle';
+        },
+        setActiveClaims(state, action) {
+            state.activeClaims = action.payload;
         }
     },
 });
@@ -103,7 +107,6 @@ const cancelClaim = (postId, email) => async dispatch => {
     try {
         await removeRecipient(postId);
         dispatch(cancelClaimSuccess(postId));
-        dispatch(fetchReceivedFood(email));
         dispatch(fetchAvailableOffers());
     }
     catch (err) {
@@ -118,7 +121,6 @@ const claimOffer = (postId, email) => async dispatch => {
         await setRecipient(postId, email);
         dispatch(claimOfferSuccess(postId));
         dispatch(fetchAvailableOffers());
-        dispatch(fetchReceivedFood(email));
     }
     catch (err) {
         console.error(err);
@@ -131,7 +133,6 @@ const confirmDelivery = (postId, email) => async dispatch => {
     try {
         await setStatusDelivered(postId);
         dispatch(confirmDeliverySuccess(postId));
-        dispatch(fetchReceivedFood(email));
     }
     catch (err) {
         console.error(err);
@@ -157,20 +158,32 @@ const fetchAvailableOffers = () => async dispatch => {
     }
 }
 
-const fetchReceivedFood = (email) => async dispatch => {
+const fetchReceivedFood = () => async (dispatch, getState) => {
+    const { email } = getState().auth;
     dispatch(getReceivedFoodStarted());
     try {
-        const posts = await getReceivedFood(email);
-        let receivedFood = [];
-        posts.forEach(doc => {
-            let postData = convertTimestamps(doc.data());
-            receivedFood.push({
-                id: doc.id,
-                data: postData
+        postsRef.where("foodRecipient", "==", email)
+            .onSnapshot((posts) => {
+                let claims = [];
+                let activeClaims = [];
+                posts.forEach(doc => {
+                    let postData = convertTimestamps(doc.data());
+                    let claim = {
+                        id: doc.id,
+                        data: postData
+                    };
+                    claims.push(claim);
+
+                    const status = claim.data.status;
+                    if (status !== "delivered") {
+                        activeClaims.push(claim);
+                    }
+                });
+                dispatch(setActiveClaims(activeClaims));
+                dispatch(getReceivedFoodSuccess(claims));
             });
-        })
-        dispatch(getReceivedFoodSuccess(receivedFood));
     } catch (err) {
+        console.error(err.toString());
         dispatch(getReceivedFoodFailed(err.toString()));
     }
 }
@@ -181,7 +194,8 @@ export const {
     claimOfferStarted, claimOfferSuccess, claimOfferFailed,
     confirmDeliveryStarted, confirmDeliverySuccess, confirmDeliveryFailed,
     getAvailableOffersStarted, getAvailableOffersSuccess, getAvailableOffersFailed,
-    getReceivedFoodStarted, getReceivedFoodSuccess, getReceivedFoodFailed
+    getReceivedFoodStarted, getReceivedFoodSuccess, getReceivedFoodFailed,
+    setActiveClaims
 } = actions;
 export { cancelClaim, claimOffer, confirmDelivery, fetchAvailableOffers, fetchReceivedFood };
 export default reducer;

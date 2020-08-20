@@ -137,8 +137,7 @@ const fetchFoodDonations = () => async (dispatch, getState) => {
                     };
                     donations.push(donation);
 
-                    const status = donation.data.status;
-                    if (status !== "delivered") {
+                    if (donation.data.status !== "delivered") {
                         activeDonations.push(donation);
                     }
                 });
