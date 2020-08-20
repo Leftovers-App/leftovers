@@ -17,9 +17,6 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function DonatedFoodScreen({ navigation, route }) {
-    const { email } = useSelector(
-        (state) => state.auth
-    );
     const { createFoodDonationError, createFoodDonationStatus, newFoodDonationId } = useSelector(
         (state) => state.foodDonation
     );
@@ -49,7 +46,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
                 <>
                     <Text>Offer some food!</Text>
                     <TextInput placeholder="Post Description" style={{ width: screenWidth * .8, height: 40, borderWidth: 1 }} value={newPostDesc} onChangeText={(text) => { setNewPostDesc(text) }} />
-                    <Button title="Create Post" onPress={() => dispatch(addFoodDonation(email, newPostDesc))} />
+                    <Button title="Create Post" onPress={() => dispatch(addFoodDonation(newPostDesc))} />
                 </>
             }
         </Container>

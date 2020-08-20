@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { cancelClaim, confirmDelivery, fetchReceivedFood } from "../../slices/foodReceptionReducer";
+import { cancelClaim, confirmDelivery } from "../../slices/foodReceptionReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { CheckSquareIcon, CircleXIcon } from "../../components/Icons";
 
@@ -17,9 +17,6 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function ReceivedFoodScreen({ navigation, route }) {
-    const { email } = useSelector(
-        (state) => state.auth
-    );
     const { cancelClaimErrors, cancelClaimStatuses, confirmDeliveryStatuses, confirmDeliveryErrors, getReceivedFoodError, getReceivedFoodStatus, receivedFood } = useSelector(
         (state) => state.foodReception
     );
@@ -39,7 +36,7 @@ export default function ReceivedFoodScreen({ navigation, route }) {
                                 : (cancelClaimStatuses[doc.id] === 'loading') ?
                                     <Text>Loading</Text>
                                     : (doc.data.status === "claimed") ?
-                                        <TouchableOpacity onPress={() => { dispatch(cancelClaim(doc.id, email)); }}><CircleXIcon /></TouchableOpacity>
+                                        <TouchableOpacity onPress={() => { dispatch(cancelClaim(doc.id)); }}><CircleXIcon /></TouchableOpacity>
                                         : (doc.data.status === "picked up") ?
                                             <>
                                                 {(confirmDeliveryErrors[doc.id]) ?
@@ -47,7 +44,7 @@ export default function ReceivedFoodScreen({ navigation, route }) {
                                                     : (confirmDeliveryStatuses[doc.id] === 'loading') ?
                                                         <Text>Loading</Text>
                                                         :
-                                                        <TouchableOpacity onPress={() => { dispatch(confirmDelivery(doc.id, email)); }}><CheckSquareIcon /></TouchableOpacity>
+                                                        <TouchableOpacity onPress={() => { dispatch(confirmDelivery(doc.id)); }}><CheckSquareIcon /></TouchableOpacity>
                                                 }
                                             </>
                                             : <></>
@@ -58,12 +55,6 @@ export default function ReceivedFoodScreen({ navigation, route }) {
         })
         return formattedPosts;
     }
-
-    useEffect(() => {
-        if (email) {
-            dispatch(fetchReceivedFood());
-        }
-    }, []);
 
     return (
         <Container>

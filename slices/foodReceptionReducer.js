@@ -102,7 +102,7 @@ const foodReceptionSlice = createSlice({
     },
 });
 
-const cancelClaim = (postId, email) => async dispatch => {
+const cancelClaim = (postId) => async dispatch => {
     dispatch(cancelClaimStarted(postId));
     try {
         await removeRecipient(postId);
@@ -115,7 +115,8 @@ const cancelClaim = (postId, email) => async dispatch => {
     }
 }
 
-const claimOffer = (postId, email) => async dispatch => {
+const claimOffer = (postId, email) => async (dispatch, getState) => {
+    const { email } = getState().auth;
     dispatch(claimOfferStarted(postId));
     try {
         await setRecipient(postId, email);
@@ -128,7 +129,8 @@ const claimOffer = (postId, email) => async dispatch => {
     }
 }
 
-const confirmDelivery = (postId, email) => async dispatch => {
+const confirmDelivery = (postId) => async (dispatch, getState) => {
+    const { email } = getState().auth;
     dispatch(confirmDeliveryStarted(postId));
     try {
         await setStatusDelivered(postId);

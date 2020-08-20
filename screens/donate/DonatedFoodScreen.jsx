@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { cancelFoodDonation, confirmPickup, fetchFoodDonations } from "../../slices/foodDonationReducer";
+import { cancelFoodDonation, confirmPickup } from "../../slices/foodDonationReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { CheckIcon, CircleXIcon } from "../../components/Icons";
 
@@ -17,9 +17,6 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function DonatedFoodScreen({ navigation, route }) {
-    const { email } = useSelector(
-        (state) => state.auth
-    );
     const { confirmPickupStatuses, confirmPickupErrors, deleteFoodDonationStatuses, deleteFoodDonationErrors, foodDonations, getFoodDonationsStatus, getFoodDonationsError } = useSelector(
         (state) => state.foodDonation
     );
@@ -41,7 +38,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
                                         : (deleteFoodDonationStatuses[doc.id] === 'loading') ?
                                             <Text>Loading</Text>
                                             :
-                                            <TouchableOpacity onPress={() => { dispatch(cancelFoodDonation(doc.id, email)); }}><CircleXIcon /></TouchableOpacity>
+                                            <TouchableOpacity onPress={() => { dispatch(cancelFoodDonation(doc.id)); }}><CircleXIcon /></TouchableOpacity>
                                 }
                             </>
                             : (doc.data.status === "assigned") ?
@@ -52,7 +49,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
                                             : (confirmPickupStatuses[doc.id] === 'loading') ?
                                                 <Text>Loading</Text>
                                                 :
-                                                <TouchableOpacity onPress={() => { dispatch(confirmPickup(doc.id, email)); }}><CheckIcon /></TouchableOpacity>
+                                                <TouchableOpacity onPress={() => { dispatch(confirmPickup(doc.id)); }}><CheckIcon /></TouchableOpacity>
                                     }
                                 </>
                                 : <></>
@@ -63,12 +60,6 @@ export default function DonatedFoodScreen({ navigation, route }) {
         })
         return formattedPosts;
     }
-
-    useEffect(() => {
-        if (email) {
-            dispatch(fetchFoodDonations());
-        }
-    }, []);
 
     return (
         <Container>

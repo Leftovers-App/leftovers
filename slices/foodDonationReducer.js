@@ -86,7 +86,8 @@ const foodDonationSlice = createSlice({
     },
 });
 
-const addFoodDonation = (email, newPostDesc) => async dispatch => {
+const addFoodDonation = (newPostDesc) => async (dispatch, getState) => {
+    const { email } = getState().auth;
     dispatch(createFoodDonationStarted());
     try {
         const newDocId = await createFoodDonation(email, newPostDesc);
@@ -97,7 +98,7 @@ const addFoodDonation = (email, newPostDesc) => async dispatch => {
     }
 }
 
-const cancelFoodDonation = (postId, email) => async dispatch => {
+const cancelFoodDonation = (postId) => async dispatch => {
     dispatch(deleteFoodDonationStarted(postId));
     try {
         await deleteFoodDonation(postId);
@@ -109,7 +110,7 @@ const cancelFoodDonation = (postId, email) => async dispatch => {
     }
 }
 
-const confirmPickup = (postId, email) => async dispatch => {
+const confirmPickup = (postId) => async dispatch => {
     dispatch(confirmPickupStarted(postId));
     try {
         await setStatusPickedUp(postId);

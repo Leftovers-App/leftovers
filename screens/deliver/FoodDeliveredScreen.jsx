@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { fetchDeliveries } from "../../slices/foodDeliveryReducer";
 import { useDispatch, useSelector } from "react-redux";
 
 let safeMargin;
@@ -16,9 +15,6 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function FoodDeliveredScreen({ navigation, route }) {
-    const { email } = useSelector(
-        (state) => state.auth
-    );
     const { deliveries, getFoodDeliveriesStatus, getFoodDeliveriesError } = useSelector(
         (state) => state.foodDelivery
     );
@@ -39,17 +35,10 @@ export default function FoodDeliveredScreen({ navigation, route }) {
         return formattedPosts;
     }
 
-    useEffect(() => {
-        if (email) {
-            dispatch(fetchDeliveries());
-        }
-    }, []);
-
     return (
         <Container>
             <SBRow>
                 <Text>Your food deliveries:</Text>
-                <Button title="Reload" onPress={() => { dispatch(fetchDeliveries()); }} />
             </SBRow>
             <View style={{ height: screenHeight * .5 }}>
                 <ScrollView>
