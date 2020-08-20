@@ -17,9 +17,6 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function JobAssignmentScreen({ navigation, route }) {
-    const { email } = useSelector(
-        (state) => state.auth
-    );
     const {
         cancelJobError, cancelJobStatus, currentJob, getAvailableJobsError, getAvailableJobsStatus, availableJobs,
         pendingJob, seenJobs, setJobPendingError, setJobPendingStatus

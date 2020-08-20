@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { acceptJob, declineJob, getDeliveries, postsRef, setJobPending, removeTransporter } from "../services/FirebaseService";
+import { acceptJob, declineJob, postsRef, setJobPending, removeTransporter } from "../services/FirebaseService";
 import { convertTimestamps } from "../services/TimestampUtil";
 
 let initialState = {
@@ -144,7 +144,7 @@ const fetchAvailableJobs = () => async (dispatch, getState) => {
     const { currentJob } = getState().foodDelivery;
     dispatch(getAvailableJobsStarted());
     try {
-        postsRef.where('status', '==', 'claimed').orderBy('claimed', 'desc').limit(10)
+        postsRef.where('status', '==', 'claimed').orderBy('claimed', 'desc')
             .onSnapshot((posts) => {
                 // If current job, end subscription
                 if (currentJob) {

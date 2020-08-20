@@ -20,15 +20,6 @@ async function deleteFoodDonation(postId) {
         });
 }
 
-async function getFoodDonations(email) {
-    const postsQuery = postsRef.where('foodDonor', '==', email);
-    return postsQuery.get()
-        .then(posts => {
-            console.log('Retrieved food donations!');
-            return posts;
-        });
-}
-
 async function setStatusPickedUp(postId) {
     await postsRef.doc(postId).update({
         status: 'picked up',
@@ -113,18 +104,6 @@ async function setStatusDelivered(postId) {
 // Delivery
 // -----------
 
-// FoodDeliveredScreen
-
-async function getDeliveries(email) {
-    const postsQuery = postsRef.where('transporter', '==', email);
-    return postsQuery.get()
-        .then(posts => {
-            console.log('Retrieved received food!');
-            return posts;
-        });
-}
-
-
 // JobAssignmentScreen
 
 async function acceptJob(postId, email) {
@@ -172,9 +151,9 @@ async function removeTransporter(postId) {
 
 export {
     postsRef,
-    createFoodDonation, deleteFoodDonation, getFoodDonations, setStatusPickedUp,
+    createFoodDonation, deleteFoodDonation, setStatusPickedUp,
     getAvailableOffers, getReceivedFood, setRecipient, removeRecipient, setStatusDelivered,
-    acceptJob, declineJob, getDeliveries, setJobPending, removeTransporter
+    acceptJob, declineJob, setJobPending, removeTransporter
 };
 
 export default firebase

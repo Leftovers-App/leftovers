@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as firebase from "firebase";
-import { createFoodDonation, deleteFoodDonation, getFoodDonations, setStatusPickedUp } from "../services/FirebaseService";
+import { createFoodDonation, deleteFoodDonation, postsRef, setStatusPickedUp } from "../services/FirebaseService";
 import { convertTimestamps } from "../services/TimestampUtil";
 
 let initialState = {
+    activeDonations: [],
     createFoodDonationError: null,
     createFoodDonationStatus: 'idle',
     confirmPickupErrors: {},
@@ -78,6 +79,9 @@ const foodDonationSlice = createSlice({
         getFoodDonationsFailed(state, action) {
             state.getFoodDonationsError = action.payload;
             state.getFoodDonationsStatus = 'idle';
+        },
+        setActiveDonations(state, action) {
+            state.activeDonations = action.payload;
         }
     },
 });
@@ -87,7 +91,6 @@ const addFoodDonation = (email, newPostDesc) => async dispatch => {
     try {
         const newDocId = await createFoodDonation(email, newPostDesc);
         dispatch(createFoodDonationSuccess(newDocId));
-        dispatch(fetchFoodDonations(email));
     } catch (err) {
         console.error("Error adding document: ", err);
         dispatch(createFoodDonationFailed(err.toString()));
@@ -99,7 +102,6 @@ const cancelFoodDonation = (postId, email) => async dispatch => {
     try {
         await deleteFoodDonation(postId);
         dispatch(deleteFoodDonationSuccess(postId));
-        dispatch(fetchFoodDonations(email));
     }
     catch (err) {
         console.error(err);
@@ -112,7 +114,6 @@ const confirmPickup = (postId, email) => async dispatch => {
     try {
         await setStatusPickedUp(postId);
         dispatch(confirmPickupSuccess(postId));
-        dispatch(fetchFoodDonations(email));
     }
     catch (err) {
         console.error(err);
@@ -120,20 +121,32 @@ const confirmPickup = (postId, email) => async dispatch => {
     }
 }
 
-const fetchFoodDonations = (email) => async dispatch => {
+const fetchFoodDonations = () => async (dispatch, getState) => {
+    const { email } = getState().auth;
     dispatch(getFoodDonationsStarted());
     try {
-        const posts = await getFoodDonations(email);
-        let foodDonations = [];
-        posts.forEach(doc => {
-            let postData = convertTimestamps(doc.data());
-            foodDonations.push({
-                id: doc.id,
-                data: postData
+        postsRef.where("foodDonor", "==", email)
+            .onSnapshot((posts) => {
+                let donations = [];
+                let activeDonations = [];
+                posts.forEach(doc => {
+                    let postData = convertTimestamps(doc.data());
+                    let donation = {
+                        id: doc.id,
+                        data: postData
+                    };
+                    donations.push(donation);
+
+                    const status = donation.data.status;
+                    if (status !== "delivered") {
+                        activeDonations.push(donation);
+                    }
+                });
+                dispatch(setActiveDonations(activeDonations));
+                dispatch(getFoodDonationsSuccess(donations));
             });
-        })
-        dispatch(getFoodDonationsSuccess(foodDonations));
     } catch (err) {
+        console.error(err.toString());
         dispatch(getFoodDonationsFailed(err.toString()));
     }
 }
@@ -143,7 +156,8 @@ export const {
     createFoodDonationStarted, createFoodDonationSuccess, createFoodDonationFailed, createFoodDonationReset,
     confirmPickupStarted, confirmPickupSuccess, confirmPickupFailed,
     deleteFoodDonationStarted, deleteFoodDonationSuccess, deleteFoodDonationFailed,
-    getFoodDonationsStarted, getFoodDonationsSuccess, getFoodDonationsFailed
+    getFoodDonationsStarted, getFoodDonationsSuccess, getFoodDonationsFailed,
+    setActiveDonations
 } = actions;
 export { addFoodDonation, cancelFoodDonation, confirmPickup, fetchFoodDonations };
 export default reducer;

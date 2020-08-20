@@ -41,7 +41,7 @@ export default function FoodDeliveredScreen({ navigation, route }) {
 
     useEffect(() => {
         if (email) {
-            dispatch(fetchDeliveries(email));
+            dispatch(fetchDeliveries());
         }
     }, []);
 
@@ -49,7 +49,7 @@ export default function FoodDeliveredScreen({ navigation, route }) {
         <Container>
             <SBRow>
                 <Text>Your food deliveries:</Text>
-                <Button title="Reload" onPress={() => { dispatch(fetchDeliveries(email)); }} />
+                <Button title="Reload" onPress={() => { dispatch(fetchDeliveries()); }} />
             </SBRow>
             <View style={{ height: screenHeight * .5 }}>
                 <ScrollView>

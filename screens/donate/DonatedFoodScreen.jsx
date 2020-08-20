@@ -66,7 +66,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
 
     useEffect(() => {
         if (email) {
-            dispatch(fetchFoodDonations(email));
+            dispatch(fetchFoodDonations());
         }
     }, []);
 
@@ -74,7 +74,6 @@ export default function DonatedFoodScreen({ navigation, route }) {
         <Container>
             <SBRow>
                 <Text>Your food donations:</Text>
-                <Button title="Reload" onPress={() => { dispatch(fetchFoodDonations(email)); }} />
             </SBRow>
             <View style={{ height: screenHeight * .5 }}>
                 <ScrollView>
