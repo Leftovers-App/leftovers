@@ -133,6 +133,7 @@ const fetchDeliveries = () => async (dispatch, getState) => {
                     }
                 });
                 dispatch(setCurrentJob(activeJob));
+                // Re-dispatch fetchAvailableJobs upon job completion
                 if (activeJobInitiallyPresent && (!activeJob)) { dispatch(fetchAvailableJobs()) }
                 dispatch(getDeliveriesSuccess(deliveries));
             });

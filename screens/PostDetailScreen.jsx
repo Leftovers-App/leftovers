@@ -13,19 +13,14 @@ if (Platform.OS == "ios") {
     safeMargin = 0;
 }
 
-export default function ProfileScreen({ navigation, route }) {
+export default function PostDetailScreen({ navigation, route }) {
     const { email } = useSelector(
         (state) => state.auth
     );
 
-    const onLogoutPress = () => {
-        firebase.auth().signOut();
-    };
-
     return (
         <Container>
             <Welcome email={email} />
-            <Button title="Logout" onPress={() => onLogoutPress()} />
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
     );
