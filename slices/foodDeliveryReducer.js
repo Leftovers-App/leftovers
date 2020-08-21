@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import { acceptJob, declineJob, postsRef, setJobPending, removeTransporter } from "../services/FirebaseService";
 import { convertTimestamps } from "../services/TimestampUtil";
 
@@ -112,12 +112,14 @@ const cancelJob = (postId) => async dispatch => {
 
 const fetchDeliveries = () => async (dispatch, getState) => {
     const { email } = getState().auth;
+    const { currentJob } = getState().foodDelivery;
     dispatch(getDeliveriesStarted());
+    const activeJobInitiallyPresent = !!currentJob;
     try {
         postsRef.where("transporter", "==", email)
             .onSnapshot((posts) => {
                 let deliveries = [];
-                let currentJob = null;
+                let activeJob = null;
                 posts.forEach(doc => {
                     let postData = convertTimestamps(doc.data());
                     let delivery = {
@@ -127,10 +129,11 @@ const fetchDeliveries = () => async (dispatch, getState) => {
                     deliveries.push(delivery);
 
                     if (delivery.data.status !== "delivered") {
-                        currentJob = delivery;
+                        activeJob = delivery;
                     }
                 });
-                dispatch(setCurrentJob(currentJob));
+                dispatch(setCurrentJob(activeJob));
+                if (activeJobInitiallyPresent && (!activeJob)) { dispatch(fetchAvailableJobs()) }
                 dispatch(getDeliveriesSuccess(deliveries));
             });
     } catch (err) {
