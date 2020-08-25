@@ -3,7 +3,7 @@ import { Button, Platform, Text } from "react-native";
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { Welcome } from "../components/Welcome";
+import PostDetailScreen from "../PostDetailScreen";
 
 let safeMargin;
 
@@ -20,7 +20,7 @@ export default function ActiveDonationsScreen({ navigation, route }) {
 
     return (
         <Container>
-            <Welcome email={email} />
+            <Button title="Post Detail" onPress={() => navigation.navigate("Post Detail")} />
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
     );

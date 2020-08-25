@@ -47,6 +47,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
                     <Text>Offer some food!</Text>
                     <TextInput placeholder="Post Description" style={{ width: screenWidth * .8, height: 40, borderWidth: 1 }} value={newPostDesc} onChangeText={(text) => { setNewPostDesc(text) }} />
                     <Button title="Create Post" onPress={() => dispatch(addFoodDonation(newPostDesc))} />
+                    <Button title="Active Donations" onPress={() => navigation.navigate("Active Donations")} />
                 </>
             }
         </Container>

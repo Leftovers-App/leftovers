@@ -26,36 +26,38 @@ export default function DonatedFoodScreen({ navigation, route }) {
         let formattedPosts = [];
         posts.forEach(doc => {
             formattedPosts.push(
-                <SBRow key={doc.id} style={{ marginBottom: 25 }}>
-                    <Text>{doc.data.description}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
-                        {(doc.data.status === 'available') ?
-                            <>
-                                {
-                                    (deleteFoodDonationErrors[doc.id]) ?
-                                        <Text style={{ color: 'red' }}>Failed</Text>
-                                        : (deleteFoodDonationStatuses[doc.id] === 'loading') ?
-                                            <Text>Loading</Text>
-                                            :
-                                            <TouchableOpacity onPress={() => { dispatch(cancelFoodDonation(doc.id)); }}><CircleXIcon /></TouchableOpacity>
-                                }
-                            </>
-                            : (doc.data.status === "assigned") ?
+                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail")}>
+                    <SBRow style={{ marginBottom: 25 }}>
+                        <Text>{doc.data.description}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
+                            {(doc.data.status === 'available') ?
                                 <>
                                     {
-                                        (confirmPickupErrors[doc.id]) ?
+                                        (deleteFoodDonationErrors[doc.id]) ?
                                             <Text style={{ color: 'red' }}>Failed</Text>
-                                            : (confirmPickupStatuses[doc.id] === 'loading') ?
+                                            : (deleteFoodDonationStatuses[doc.id] === 'loading') ?
                                                 <Text>Loading</Text>
                                                 :
-                                                <TouchableOpacity onPress={() => { dispatch(confirmPickup(doc.id)); }}><CheckIcon /></TouchableOpacity>
+                                                <TouchableOpacity onPress={() => { dispatch(cancelFoodDonation(doc.id)); }}><CircleXIcon /></TouchableOpacity>
                                     }
                                 </>
-                                : <></>
-                        }
-                    </View>
-                </SBRow>
+                                : (doc.data.status === "assigned") ?
+                                    <>
+                                        {
+                                            (confirmPickupErrors[doc.id]) ?
+                                                <Text style={{ color: 'red' }}>Failed</Text>
+                                                : (confirmPickupStatuses[doc.id] === 'loading') ?
+                                                    <Text>Loading</Text>
+                                                    :
+                                                    <TouchableOpacity onPress={() => { dispatch(confirmPickup(doc.id)); }}><CheckIcon /></TouchableOpacity>
+                                        }
+                                    </>
+                                    : <></>
+                            }
+                        </View>
+                    </SBRow>
+                </TouchableOpacity>
             )
         })
         return formattedPosts;

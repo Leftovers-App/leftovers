@@ -3,7 +3,6 @@ import { Button, Platform, Text } from "react-native";
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { Welcome } from "../components/Welcome";
 
 let safeMargin;
 
@@ -20,7 +19,7 @@ export default function PostDetailScreen({ navigation, route }) {
 
     return (
         <Container>
-            <Welcome email={email} />
+            <Text>This is the Post Detail screen!</Text>
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
     );
