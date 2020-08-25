@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Platform, Text } from "react-native";
+import { Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
 import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,14 +13,50 @@ if (Platform.OS == "ios") {
     safeMargin = 0;
 }
 
+const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
+
 export default function ActiveDonationsScreen({ navigation, route }) {
-    const { email } = useSelector(
-        (state) => state.auth
+    const { activeDonations, getFoodDonationsStatus, getFoodDonationsError } = useSelector(
+        (state) => state.foodDonation
     );
 
+    const formatPosts = (posts) => {
+        let formattedPosts = [];
+        posts.forEach(doc => {
+            formattedPosts.push(
+                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail", { post: doc })}>
+                    <SBRow style={{ marginBottom: 25 }}>
+                        <Text>{doc.data.description}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
+                        </View>
+                    </SBRow>
+                </TouchableOpacity>
+            )
+        })
+        return formattedPosts;
+    }
     return (
         <Container>
-            <Button title="Post Detail" onPress={() => navigation.navigate("Post Detail")} />
+            <SBRow>
+                <Text>Your active donations:</Text>
+            </SBRow>
+            <View style={{ height: screenHeight * .5 }}>
+                <ScrollView>
+                    {(getFoodDonationsError) ?
+                        <Text style={{ color: 'red' }}>{getFoodDonationsError}</Text>
+                        : (getFoodDonationsStatus === 'loading') ?
+                            <Text>Loading donations...</Text>
+                            : (activeDonations.length > 0) ?
+                                <>
+                                    {formatPosts(activeDonations)}
+                                </>
+                                :
+                                <Text>No active donations!</Text>
+                    }
+                </ScrollView>
+            </View>
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
     );
@@ -31,4 +67,11 @@ const Container = styled.SafeAreaView`
   backgroundColor: #fff;
   alignItems: center;
   justifyContent: space-evenly;
+`;
+
+const SBRow = styled.View`
+    flexDirection: row;
+    justifyContent: space-between;
+    alignItems: center;
+    width: ${screenWidth * .8}px;
 `;

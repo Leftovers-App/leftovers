@@ -27,7 +27,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
         if (newFoodDonationId) {
             console.log('New donation confirmed in NewOfferScreen: ', newFoodDonationId);
             setNewPostDesc("");
-            navigation.navigate("Donated Food");
+            navigation.navigate("Active Donations");
             dispatch(createFoodDonationReset());
         }
     }, [newFoodDonationId]);

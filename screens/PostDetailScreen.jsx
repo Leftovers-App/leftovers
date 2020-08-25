@@ -17,7 +17,7 @@ export default function PostDetailScreen({ navigation, route }) {
 
     return (
         <Container>
-            <Text>Post Detail screen with ID: {post.id}!</Text>
+            <Text>Post Detail for: {post.data.description}!</Text>
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
     );
