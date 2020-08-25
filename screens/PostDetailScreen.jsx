@@ -13,13 +13,11 @@ if (Platform.OS == "ios") {
 }
 
 export default function PostDetailScreen({ navigation, route }) {
-    const { email } = useSelector(
-        (state) => state.auth
-    );
+    const { post } = route.params;
 
     return (
         <Container>
-            <Text>This is the Post Detail screen!</Text>
+            <Text>Post Detail screen with ID: {post.id}!</Text>
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
     );
