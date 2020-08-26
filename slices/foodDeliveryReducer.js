@@ -112,12 +112,12 @@ const cancelJob = (postId) => async dispatch => {
 
 const fetchDeliveries = () => async (dispatch, getState) => {
     const { email } = getState().auth;
-    const { currentJob } = getState().foodDelivery;
     dispatch(getDeliveriesStarted());
-    const activeJobInitiallyPresent = !!currentJob;
     try {
         postsRef.where("transporter", "==", email)
             .onSnapshot((posts) => {
+                const { currentJob } = getState().foodDelivery;
+                let activeJobInitiallyPresent = !!currentJob;
                 let deliveries = [];
                 let activeJob = null;
                 posts.forEach(doc => {
@@ -134,7 +134,9 @@ const fetchDeliveries = () => async (dispatch, getState) => {
                 });
                 dispatch(setCurrentJob(activeJob));
                 // Re-dispatch fetchAvailableJobs upon job completion
-                if (activeJobInitiallyPresent && (!activeJob)) { dispatch(fetchAvailableJobs()) }
+                if (activeJobInitiallyPresent && (!activeJob)) {
+                    dispatch(fetchAvailableJobs());
+                }
                 dispatch(getDeliveriesSuccess(deliveries));
             });
     } catch (err) {
@@ -144,11 +146,11 @@ const fetchDeliveries = () => async (dispatch, getState) => {
 }
 
 const fetchAvailableJobs = () => async (dispatch, getState) => {
-    const { currentJob } = getState().foodDelivery;
     dispatch(getAvailableJobsStarted());
     try {
         postsRef.where('status', '==', 'claimed').orderBy('claimed', 'desc')
             .onSnapshot((posts) => {
+                const { currentJob } = getState().foodDelivery;
                 // If current job, end subscription
                 if (currentJob) {
                     return

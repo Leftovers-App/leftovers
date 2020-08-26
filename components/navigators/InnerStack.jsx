@@ -10,7 +10,7 @@ export default function InnerStack(props) {
     }
 
     return (
-        <Stack.Navigator screenOptions={({ route }) => ({ headerShown: false })}>
+        <Stack.Navigator initialRouteName={props.initialRoute} screenOptions={({ route }) => ({ headerShown: false })}>
             {screens}
         </Stack.Navigator>
     );

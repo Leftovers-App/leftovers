@@ -57,7 +57,7 @@ export default function ActiveDonationsScreen({ navigation, route }) {
                     }
                 </ScrollView>
             </View>
-            <Button title="Go Back" onPress={() => navigation.goBack()} />
+            <Button title="Add Donation" onPress={() => navigation.navigate("New Offer")} />
         </Container>
     );
 }
