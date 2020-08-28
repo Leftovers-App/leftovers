@@ -14,7 +14,6 @@ function actionStack() {
     let initialActionRoute;
     if (activeDonations.length > 0) { initialActionRoute = "Active Donations" }
     else { initialActionRoute = "New Offer" }
-    console.log(`Initial Action Route: ${initialActionRoute}`)
 
     const routes = {
         "New Offer": NewOfferScreen,

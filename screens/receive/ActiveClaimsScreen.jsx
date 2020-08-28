@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import * as React from "react";
+import { Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { claimOffer, fetchAvailableOffers } from "../../slices/foodReceptionReducer";
+import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { CircleCheckIcon } from "../../components/Icons";
+import PostDetailScreen from "../PostDetailScreen";
 
 let safeMargin;
 
@@ -16,14 +16,10 @@ if (Platform.OS == "ios") {
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
-export default function AvailableOffersScreen({ navigation, route }) {
-    const { email } = useSelector(
-        (state) => state.auth
-    );
-    const { availableOffers, claimOfferErrors, claimOfferStatuses, getAvailableOffersStatus, getAvailableOffersError } = useSelector(
+export default function ActiveClaimsScreen({ navigation, route }) {
+    const { activeClaims, getAvailableOffersStatus, getAvailableOffersError } = useSelector(
         (state) => state.foodReception
     );
-    const dispatch = useDispatch();
 
     const formatPosts = (posts) => {
         let formattedPosts = [];
@@ -34,14 +30,6 @@ export default function AvailableOffersScreen({ navigation, route }) {
                         <Text>{doc.data.description}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
-                            {
-                                (claimOfferErrors[doc.id]) ?
-                                    <Text style={{ color: 'red' }}>Failed</Text>
-                                    : (claimOfferStatuses[doc.id] === 'loading') ?
-                                        <Text>Loading</Text>
-                                        :
-                                        <TouchableOpacity onPress={() => { dispatch(claimOffer(doc.id, email)); }}><CircleCheckIcon /></TouchableOpacity>
-                            }
                         </View>
                     </SBRow>
                 </TouchableOpacity>
@@ -49,33 +37,27 @@ export default function AvailableOffersScreen({ navigation, route }) {
         })
         return formattedPosts;
     }
-
-    useEffect(() => {
-        dispatch(fetchAvailableOffers());
-    }, []);
-
     return (
         <Container>
             <SBRow>
-                <Text>Available Offers:</Text>
-                <Button title="Reload" onPress={() => { dispatch(fetchAvailableOffers()); }} />
+                <Text>Your active claims:</Text>
             </SBRow>
             <View style={{ height: screenHeight * .5 }}>
                 <ScrollView>
                     {(getAvailableOffersError) ?
                         <Text style={{ color: 'red' }}>{getAvailableOffersError}</Text>
                         : (getAvailableOffersStatus === 'loading') ?
-                            <Text>Loading offers...</Text>
-                            : (availableOffers.length > 0) ?
+                            <Text>Loading claims...</Text>
+                            : (activeClaims.length > 0) ?
                                 <>
-                                    {formatPosts(availableOffers)}
+                                    {formatPosts(activeClaims)}
                                 </>
                                 :
-                                <Text>No offers available!</Text>
+                                <Text>No active claims!</Text>
                     }
                 </ScrollView>
-                <Button title="Active Claims" onPress={() => { navigation.navigate("Active Claims") }} />
             </View>
+            <Button title="Available Offers" onPress={() => navigation.navigate("Available Offers")} />
         </Container>
     );
 }

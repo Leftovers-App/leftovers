@@ -26,31 +26,33 @@ export default function ReceivedFoodScreen({ navigation, route }) {
         let formattedPosts = [];
         posts.forEach(doc => {
             formattedPosts.push(
-                <SBRow key={doc.id} style={{ marginBottom: 25 }}>
-                    <Text>{doc.data.description}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
-                        {
-                            (cancelClaimErrors[doc.id]) ?
-                                <Text style={{ color: 'red' }}>Failed</Text>
-                                : (cancelClaimStatuses[doc.id] === 'loading') ?
-                                    <Text>Loading</Text>
-                                    : (doc.data.status === "claimed") ?
-                                        <TouchableOpacity onPress={() => { dispatch(cancelClaim(doc.id)); }}><CircleXIcon /></TouchableOpacity>
-                                        : (doc.data.status === "picked up") ?
-                                            <>
-                                                {(confirmDeliveryErrors[doc.id]) ?
-                                                    <Text style={{ color: 'red' }}>Failed</Text>
-                                                    : (confirmDeliveryStatuses[doc.id] === 'loading') ?
-                                                        <Text>Loading</Text>
-                                                        :
-                                                        <TouchableOpacity onPress={() => { dispatch(confirmDelivery(doc.id)); }}><CheckSquareIcon /></TouchableOpacity>
-                                                }
-                                            </>
-                                            : <></>
-                        }
-                    </View>
-                </SBRow>
+                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail", { post: doc })}>
+                    <SBRow style={{ marginBottom: 25 }}>
+                        <Text>{doc.data.description}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
+                            {
+                                (cancelClaimErrors[doc.id]) ?
+                                    <Text style={{ color: 'red' }}>Failed</Text>
+                                    : (cancelClaimStatuses[doc.id] === 'loading') ?
+                                        <Text>Loading</Text>
+                                        : (doc.data.status === "claimed") ?
+                                            <TouchableOpacity onPress={() => { dispatch(cancelClaim(doc.id)); }}><CircleXIcon /></TouchableOpacity>
+                                            : (doc.data.status === "picked up") ?
+                                                <>
+                                                    {(confirmDeliveryErrors[doc.id]) ?
+                                                        <Text style={{ color: 'red' }}>Failed</Text>
+                                                        : (confirmDeliveryStatuses[doc.id] === 'loading') ?
+                                                            <Text>Loading</Text>
+                                                            :
+                                                            <TouchableOpacity onPress={() => { dispatch(confirmDelivery(doc.id)); }}><CheckSquareIcon /></TouchableOpacity>
+                                                    }
+                                                </>
+                                                : <></>
+                            }
+                        </View>
+                    </SBRow>
+                </TouchableOpacity>
             )
         })
         return formattedPosts;
