@@ -1,49 +1,49 @@
-import React as * from "react";
+import * as React from "react";
 
 export const AcceptJobButton = () => {
     return (
-        null
+        <Text>Accept Job</Text>
     );
 }
 
 export const CancelClaimButton = () => {
     return (
-        null
+        <Text>Cancel Claim</Text>
     );
 }
 
 export const CancelJobButton = () => {
     return (
-        null
+        <Text>Cancel Job</Text>
     );
 }
 
 export const CancelOfferButton = () => {
     return (
-        null
+        <Text>Cancel Offer</Text>
     );
 }
 
-export const ClaimButton = () => {
+export const ClaimOfferButton = () => {
     return (
-        null
+        <Text>Claim Offer</Text>
     );
 }
 
 export const ConfirmDeliveryButton = () => {
     return (
-        null
+        <Text>Confirm Delivery</Text>
     );
 }
 
 export const ConfirmPickupButton = () => {
     return (
-        null
+        <Text>Confirm Pickup</Text>
     );
 }
 
 export const DenyJobButton = () => {
     return (
-        null
+        <Text>Deny Job</Text>
     );
 }
