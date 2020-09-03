@@ -26,7 +26,7 @@ export default function DonatedFoodScreen({ navigation, route }) {
         let formattedPosts = [];
         posts.forEach(doc => {
             formattedPosts.push(
-                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail", { post: doc })}>
+                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail", { post: doc, role: "donate" })}>
                     <SBRow style={{ marginBottom: 25 }}>
                         <Text>{doc.data.description}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>

@@ -13,11 +13,12 @@ if (Platform.OS == "ios") {
 }
 
 export default function PostDetailScreen({ navigation, route }) {
-    const { post } = route.params;
+    const { post, role } = route.params;
 
     return (
         <Container>
             <Text>Post Detail for: {post.data.description}!</Text>
+            <Text>Role: {role}</Text>
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
     );
