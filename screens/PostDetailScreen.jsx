@@ -22,12 +22,16 @@ export default function PostDetailScreen({ navigation, route }) {
     // list, based on post ID passed into this screen as a prop, such that post status stays accurate/current.
     // Add a useEffect to handle case where post returns null from useSelector (post no longer in snapshotted list due to cancel action, etc.),
     // then navigation.goBack()
-    const { post, role } = route.params;
+    const { postId, role } = route.params;
     const { postActions, setPostActions } = useState([]);
+    let post = null;
 
     useEffect(() => {
         let newPostActions = [];
         if (role === "donate") {
+            const { foodDonations } = useSelector((state) => state.foodDonation);
+            post = foodDonations.find(donation => donation.id === postId);
+
             if (post.data.status === "available") {
                 newPostActions.push(CancelOfferButton);
             }
@@ -37,26 +41,44 @@ export default function PostDetailScreen({ navigation, route }) {
         }
         else if (role === "receive") {
             if (post.data.status === "available") {
+                const { availableOffers } = useSelector((state) => state.foodReception);
+                post = availableOffers.find(offer => offer.id === postId);
+
                 newPostActions.push(ClaimOfferButton);
             }
-            else if (post.data.status === "claimed") {
-                newPostActions.push(CancelClaimButton);
-            }
-            else if (post.data.status === "picked up") {
-                newPostActions.push(ConfirmDeliveryButton);
+            else {
+                const { receivedFood } = useSelector((state) => state.foodReception);
+                post = receivedFood.find(claim => claim.id === postId);
+
+                if (post.data.status === "claimed") {
+                    newPostActions.push(CancelClaimButton);
+                }
+                else if (post.data.status === "picked up") {
+                    newPostActions.push(ConfirmDeliveryButton);
+                }
             }
         }
         else if (role === "deliver") {
             if (post.data.status === "pending assignment") {
+                const { availableJobs } = useSelector((state) => state.foodDelivery);
+                post = availableJobs.find(offer => offer.id === postId);
+
                 newPostActions.push(AcceptJobButton);
                 newPostActions.push(DenyJobButton);
             }
-            else if (post.data.status === "assigned") {
-                newPostActions.push(CancelJobButton)
+            else {
+                const { deliveries } = useSelector((state) => state.foodDelivery);
+                post = deliveries.find(offer => offer.id === postId);
+
+                if (post.data.status === "assigned") { newPostActions.push(CancelJobButton); }
             }
         }
         setPostActions(newPostActions);
-    }, [role,])
+        if (!post) {
+            console.log("Post not defined at PostDetail. Navigating back.");
+            navigation.goBack();
+        }
+    }, [post, role])
 
 
     return (

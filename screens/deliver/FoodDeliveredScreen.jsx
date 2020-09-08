@@ -24,7 +24,7 @@ export default function FoodDeliveredScreen({ navigation, route }) {
         let formattedPosts = [];
         posts.forEach(doc => {
             formattedPosts.push(
-                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail", { post: doc, role: "deliver" })}>
+                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail", { postId: doc.id, role: "deliver" })}>
                     <SBRow style={{ marginBottom: 25 }}>
                         <Text>{doc.data.description}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
