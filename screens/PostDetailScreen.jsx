@@ -78,8 +78,15 @@ export default function PostDetailScreen({ navigation, route }) {
             console.log("Post not defined at PostDetail. Navigating back.");
             navigation.goBack();
         }
-    }, [post, role])
+    }, [postId, role])
 
+    // Handle post that should've existed but no longer does
+    useEffect(() => {
+        if (!postId) {
+            console.log("Post ID not defined at PostDetail. Navigating back.");
+            navigation.goBack();
+        }
+    })
 
     return (
         <Container>
