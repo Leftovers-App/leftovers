@@ -19,6 +19,7 @@ export default function PostDetailScreen({ navigation, route }) {
     const { initialPost, role } = route.params;
     // const [postActions, setPostActions] = useState([]);
     let post = null;
+    let newPostActions = [];
 
     // Handle post that does not have a valid initialPost
     useEffect(() => {
@@ -28,8 +29,49 @@ export default function PostDetailScreen({ navigation, route }) {
         }
     }, [])
 
+    useEffect(() => {
+        // let newPostActions = [];
+        switch (role) {
+            case "donate":
+                console.log("donate post detail")
+                // if (post.data.status === "available") {
+                //     newPostActions.push(CancelOfferButton);
+                // }
+                // else if (post.data.status === "assigned") {
+                //     newPostActions.push(ConfirmPickupButton);
+                // }
+                // setPostActions(newPostActions);
+                break;
+            case "receive":
+                console.log("receive post detail")
+                // const { receiveDetailPost } = useSelector((state) => state.foodReception);
+                // post = receiveDetailPost;
+                if (post) {
+                    if (post.data.status === "available") { newPostActions.push(ClaimOfferButton(post.id)); }
+                    else {
+                        if (post.data.status === "claimed") { newPostActions.push(CancelClaimButton); }
+                        else if (post.data.status === "picked up") { newPostActions.push(ConfirmDeliveryButton); }
+                    }
+                    // setPostActions(newPostActions);
+                } else { console.log('no post to action') }
+                break;
+            case "deliver":
+                console.log("deliver post detail")
+                // if (post.data.status === "pending assignment") {
+                //     newPostActions.push(AcceptJobButton);
+                //     newPostActions.push(DenyJobButton);
+                // }
+                // else { if (post.data.status === "assigned") { newPostActions.push(CancelJobButton); } }
+                // setPostActions(newPostActions);
+                break;
+            default:
+                console.log("No valid role. No actions to add.")
+            // navigation.goBack();
+        }
+    }, [post])
+
     // Select post from Redux state
-    let postActions = [];
+    // let newPostActions = [];
     switch (role) {
         case "donate":
             console.log("donate post detail")
@@ -46,12 +88,13 @@ export default function PostDetailScreen({ navigation, route }) {
             const { receiveDetailPost } = useSelector((state) => state.foodReception);
             post = receiveDetailPost;
             if (post) {
-                if (post.data.status === "available") { postActions.push(ClaimOfferButton(post.id)); }
-                else {
-                    if (post.data.status === "claimed") { postActions.push(CancelClaimButton); }
-                    else if (post.data.status === "picked up") { postActions.push(ConfirmDeliveryButton); }
-                }
+                // if (post.data.status === "available") { newPostActions.push(ClaimOfferButton(post.id)); }
+                // else {
+                //     if (post.data.status === "claimed") { newPostActions.push(CancelClaimButton); }
+                //     else if (post.data.status === "picked up") { newPostActions.push(ConfirmDeliveryButton); }
+                // }
                 // setPostActions(newPostActions);
+                console.log("there's a post")
             } else { navigation.goBack(); }
             break;
         case "deliver":
@@ -68,47 +111,6 @@ export default function PostDetailScreen({ navigation, route }) {
             navigation.goBack();
     }
 
-    if (!post) {
-        console.log("Post not defined at PostDetail. Navigating back.");
-        navigation.goBack();
-    }
-
-    // Make actions available based on role and post status
-    // useEffect(() => {
-    //     if (post) {
-    //         let newPostActions = [];
-    //         switch (role) {
-    //             case "donate":
-    //                 if (post.data.status === "available") {
-    //                     newPostActions.push(CancelOfferButton);
-    //                 }
-    //                 else if (post.data.status === "assigned") {
-    //                     newPostActions.push(ConfirmPickupButton);
-    //                 }
-    //                 setPostActions(newPostActions);
-    //                 break;
-    //             case "receive":
-    //                 if (post.data.status === "available") { newPostActions.push(ClaimOfferButton(post.id)); }
-    //                 else {
-    //                     if (post.data.status === "claimed") { newPostActions.push(CancelClaimButton); }
-    //                     else if (post.data.status === "picked up") { newPostActions.push(ConfirmDeliveryButton); }
-    //                 }
-    //                 setPostActions(newPostActions);
-    //                 break;
-    //             case "deliver":
-    //                 if (post.data.status === "pending assignment") {
-    //                     newPostActions.push(AcceptJobButton);
-    //                     newPostActions.push(DenyJobButton);
-    //                 }
-    //                 else { if (post.data.status === "assigned") { newPostActions.push(CancelJobButton); } }
-    //                 setPostActions(newPostActions);
-    //                 break;
-    //             default:
-    //                 console.log("Role invalid in post detail.");
-    //         }
-    //     } else { console.log("No valid post."); }
-    // }, [post])
-
     return (
         <Container>
             {(post) ?
@@ -116,7 +118,7 @@ export default function PostDetailScreen({ navigation, route }) {
                     <Text>Post Detail for: {post.data.description}!</Text>
                     <Text>Actions:</Text>
                     <SBRow>
-                        {postActions}
+                        {newPostActions}
                     </SBRow>
                 </>
                 :

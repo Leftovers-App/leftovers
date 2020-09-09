@@ -166,6 +166,7 @@ const fetchAvailableOffers = () => async dispatch => {
 
 const fetchReceivedFood = () => async (dispatch, getState) => {
     const { email } = getState().auth;
+    const { receiveDetailPost } = getState().foodReception;
     dispatch(getReceivedFoodStarted());
     try {
         postsRef.where("foodRecipient", "==", email)
@@ -183,6 +184,12 @@ const fetchReceivedFood = () => async (dispatch, getState) => {
                     const status = claim.data.status;
                     if (status !== "delivered") {
                         activeClaims.push(claim);
+                    }
+
+                    if (receiveDetailPost !== null) {
+                        if (receiveDetailPost.id) {
+                            if (claim.id === receiveDetailPost.id) { setReceiveDetailPost(claim); }
+                        }
                     }
                 });
                 dispatch(setActiveClaims(activeClaims));
