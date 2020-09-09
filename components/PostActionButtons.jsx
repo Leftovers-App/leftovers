@@ -1,4 +1,8 @@
 import * as React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Text, TouchableOpacity, View } from "react-native";
+import { claimOffer } from "../slices/foodReceptionReducer";
+import { CircleCheckIcon } from "./Icons";
 
 export const AcceptJobButton = () => {
     return (
@@ -24,9 +28,22 @@ export const CancelOfferButton = () => {
     );
 }
 
-export const ClaimOfferButton = () => {
+export const ClaimOfferButton = (postId) => {
+    const { claimOfferErrors, claimOfferStatuses } = useSelector(
+        (state) => state.foodReception
+    );
+    const dispatch = useDispatch();
+
     return (
-        <Text>Claim Offer</Text>
+        <React.Fragment key={postId}>
+            {(claimOfferErrors[postId]) ?
+                <Text style={{ color: 'red' }}>Failed</Text>
+                : (claimOfferStatuses[postId] === 'loading') ?
+                    <Text>Loading</Text>
+                    :
+                    <TouchableOpacity onPress={() => { dispatch(claimOffer(postId)); }}><CircleCheckIcon /></TouchableOpacity>
+            }
+        </React.Fragment>
     );
 }
 

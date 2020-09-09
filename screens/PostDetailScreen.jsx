@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Dimensions, Platform, Text } from "react-native";
 import styled from "styled-components/native";
-import * as firebase from "firebase";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { AcceptJobButton, CancelClaimButton, CancelJobButton, CancelOfferButton, ClaimOfferButton, ConfirmDeliveryButton, ConfirmPickupButton, DenyJobButton } from "../components/PostActionButtons";
-import { acceptJob } from "../services/FirebaseService";
 
 let safeMargin;
 
@@ -18,83 +16,112 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function PostDetailScreen({ navigation, route }) {
-    // TODO: on initial load of this screen, useSelector the post you're trying to view from the appropriate role's snapshotted
-    // list, based on post ID passed into this screen as a prop, such that post status stays accurate/current.
-    // Add a useEffect to handle case where post returns null from useSelector (post no longer in snapshotted list due to cancel action, etc.),
-    // then navigation.goBack()
-    const { postId, role } = route.params;
-    const { postActions, setPostActions } = useState([]);
+    const { initialPost, role } = route.params;
+    // const [postActions, setPostActions] = useState([]);
     let post = null;
 
+    // Handle post that does not have a valid initialPost
     useEffect(() => {
-        let newPostActions = [];
-        if (role === "donate") {
-            const { foodDonations } = useSelector((state) => state.foodDonation);
-            post = foodDonations.find(donation => donation.id === postId);
-
-            if (post.data.status === "available") {
-                newPostActions.push(CancelOfferButton);
-            }
-            else if (post.data.status === "assigned") {
-                newPostActions.push(ConfirmPickupButton);
-            }
-        }
-        else if (role === "receive") {
-            if (post.data.status === "available") {
-                const { availableOffers } = useSelector((state) => state.foodReception);
-                post = availableOffers.find(offer => offer.id === postId);
-
-                newPostActions.push(ClaimOfferButton);
-            }
-            else {
-                const { receivedFood } = useSelector((state) => state.foodReception);
-                post = receivedFood.find(claim => claim.id === postId);
-
-                if (post.data.status === "claimed") {
-                    newPostActions.push(CancelClaimButton);
-                }
-                else if (post.data.status === "picked up") {
-                    newPostActions.push(ConfirmDeliveryButton);
-                }
-            }
-        }
-        else if (role === "deliver") {
-            if (post.data.status === "pending assignment") {
-                const { availableJobs } = useSelector((state) => state.foodDelivery);
-                post = availableJobs.find(offer => offer.id === postId);
-
-                newPostActions.push(AcceptJobButton);
-                newPostActions.push(DenyJobButton);
-            }
-            else {
-                const { deliveries } = useSelector((state) => state.foodDelivery);
-                post = deliveries.find(offer => offer.id === postId);
-
-                if (post.data.status === "assigned") { newPostActions.push(CancelJobButton); }
-            }
-        }
-        setPostActions(newPostActions);
-        if (!post) {
-            console.log("Post not defined at PostDetail. Navigating back.");
+        if (!initialPost) {
+            console.log("Initial post not defined at PostDetail. Navigating back.");
             navigation.goBack();
         }
-    }, [postId, role])
+    }, [])
 
-    // Handle post that should've existed but no longer does
-    useEffect(() => {
-        if (!postId) {
-            console.log("Post ID not defined at PostDetail. Navigating back.");
+    // Select post from Redux state
+    let postActions = [];
+    switch (role) {
+        case "donate":
+            console.log("donate post detail")
+            // if (post.data.status === "available") {
+            //     newPostActions.push(CancelOfferButton);
+            // }
+            // else if (post.data.status === "assigned") {
+            //     newPostActions.push(ConfirmPickupButton);
+            // }
+            // setPostActions(newPostActions);
+            break;
+        case "receive":
+            console.log("receive post detail")
+            const { receiveDetailPost } = useSelector((state) => state.foodReception);
+            post = receiveDetailPost;
+            if (post) {
+                if (post.data.status === "available") { postActions.push(ClaimOfferButton(post.id)); }
+                else {
+                    if (post.data.status === "claimed") { postActions.push(CancelClaimButton); }
+                    else if (post.data.status === "picked up") { postActions.push(ConfirmDeliveryButton); }
+                }
+                // setPostActions(newPostActions);
+            } else { navigation.goBack(); }
+            break;
+        case "deliver":
+            console.log("deliver post detail")
+            // if (post.data.status === "pending assignment") {
+            //     newPostActions.push(AcceptJobButton);
+            //     newPostActions.push(DenyJobButton);
+            // }
+            // else { if (post.data.status === "assigned") { newPostActions.push(CancelJobButton); } }
+            // setPostActions(newPostActions);
+            break;
+        default:
+            console.log("No valid role. Exiting post detail.")
             navigation.goBack();
-        }
-    })
+    }
+
+    if (!post) {
+        console.log("Post not defined at PostDetail. Navigating back.");
+        navigation.goBack();
+    }
+
+    // Make actions available based on role and post status
+    // useEffect(() => {
+    //     if (post) {
+    //         let newPostActions = [];
+    //         switch (role) {
+    //             case "donate":
+    //                 if (post.data.status === "available") {
+    //                     newPostActions.push(CancelOfferButton);
+    //                 }
+    //                 else if (post.data.status === "assigned") {
+    //                     newPostActions.push(ConfirmPickupButton);
+    //                 }
+    //                 setPostActions(newPostActions);
+    //                 break;
+    //             case "receive":
+    //                 if (post.data.status === "available") { newPostActions.push(ClaimOfferButton(post.id)); }
+    //                 else {
+    //                     if (post.data.status === "claimed") { newPostActions.push(CancelClaimButton); }
+    //                     else if (post.data.status === "picked up") { newPostActions.push(ConfirmDeliveryButton); }
+    //                 }
+    //                 setPostActions(newPostActions);
+    //                 break;
+    //             case "deliver":
+    //                 if (post.data.status === "pending assignment") {
+    //                     newPostActions.push(AcceptJobButton);
+    //                     newPostActions.push(DenyJobButton);
+    //                 }
+    //                 else { if (post.data.status === "assigned") { newPostActions.push(CancelJobButton); } }
+    //                 setPostActions(newPostActions);
+    //                 break;
+    //             default:
+    //                 console.log("Role invalid in post detail.");
+    //         }
+    //     } else { console.log("No valid post."); }
+    // }, [post])
 
     return (
         <Container>
-            <Text>Post Detail for: {post.data.description}!</Text>
-            <Text>Actions:</Text>
-            <SBRow>
-                {postActions}
-            </SBRow>
+            {(post) ?
+                <>
+                    <Text>Post Detail for: {post.data.description}!</Text>
+                    <Text>Actions:</Text>
+                    <SBRow>
+                        {postActions}
+                    </SBRow>
+                </>
+                :
+                <Text>No post available!</Text>
+            }
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
     );

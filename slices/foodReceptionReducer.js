@@ -16,7 +16,8 @@ let initialState = {
     getAvailableOffersStatus: "idle",
     getReceivedFoodError: null,
     getReceivedFoodStatus: "idle",
-    receivedFood: []
+    receivedFood: [],
+    receiveDetailPost: null
 };
 
 const foodReceptionSlice = createSlice({
@@ -98,6 +99,9 @@ const foodReceptionSlice = createSlice({
         },
         setActiveClaims(state, action) {
             state.activeClaims = action.payload;
+        },
+        setReceiveDetailPost(state, action) {
+            state.receiveDetailPost = action.payload
         }
     },
 });
@@ -115,7 +119,7 @@ const cancelClaim = (postId) => async dispatch => {
     }
 }
 
-const claimOffer = (postId, email) => async (dispatch, getState) => {
+const claimOffer = (postId) => async (dispatch, getState) => {
     const { email } = getState().auth;
     dispatch(claimOfferStarted(postId));
     try {
@@ -197,7 +201,7 @@ export const {
     confirmDeliveryStarted, confirmDeliverySuccess, confirmDeliveryFailed,
     getAvailableOffersStarted, getAvailableOffersSuccess, getAvailableOffersFailed,
     getReceivedFoodStarted, getReceivedFoodSuccess, getReceivedFoodFailed,
-    setActiveClaims
+    setActiveClaims, setReceiveDetailPost
 } = actions;
 export { cancelClaim, claimOffer, confirmDelivery, fetchAvailableOffers, fetchReceivedFood };
 export default reducer;
