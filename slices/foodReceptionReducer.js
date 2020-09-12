@@ -17,7 +17,8 @@ let initialState = {
     getReceivedFoodError: null,
     getReceivedFoodStatus: "idle",
     receivedFood: [],
-    receiveDetailPost: null
+    detailPost: null,
+    setDetailPostStatus: "not ready"
 };
 
 const foodReceptionSlice = createSlice({
@@ -100,8 +101,13 @@ const foodReceptionSlice = createSlice({
         setActiveClaims(state, action) {
             state.activeClaims = action.payload;
         },
-        setReceiveDetailPost(state, action) {
-            state.receiveDetailPost = action.payload
+        setDetailPost(state, action) {
+            state.detailPost = action.payload;
+            state.setDetailPostStatus = "ready";
+        },
+        resetReceiveDetailPost(state) {
+            state.setDetailPostStatus = "not ready";
+            state.detailPost = null;
         }
     },
 });
@@ -166,7 +172,7 @@ const fetchAvailableOffers = () => async dispatch => {
 
 const fetchReceivedFood = () => async (dispatch, getState) => {
     const { email } = getState().auth;
-    const { receiveDetailPost } = getState().foodReception;
+    const { detailPost } = getState().foodReception;
     dispatch(getReceivedFoodStarted());
     try {
         postsRef.where("foodRecipient", "==", email)
@@ -186,9 +192,9 @@ const fetchReceivedFood = () => async (dispatch, getState) => {
                         activeClaims.push(claim);
                     }
 
-                    if (receiveDetailPost !== null) {
-                        if (receiveDetailPost.id) {
-                            if (claim.id === receiveDetailPost.id) { setReceiveDetailPost(claim); }
+                    if (detailPost !== null) {
+                        if (detailPost.id) {
+                            if (claim.id === detailPost.id) { setDetailPost(claim); }
                         }
                     }
                 });
@@ -208,7 +214,7 @@ export const {
     confirmDeliveryStarted, confirmDeliverySuccess, confirmDeliveryFailed,
     getAvailableOffersStarted, getAvailableOffersSuccess, getAvailableOffersFailed,
     getReceivedFoodStarted, getReceivedFoodSuccess, getReceivedFoodFailed,
-    setActiveClaims, setReceiveDetailPost
+    setActiveClaims, setDetailPost
 } = actions;
 export { cancelClaim, claimOffer, confirmDelivery, fetchAvailableOffers, fetchReceivedFood };
 export default reducer;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { fetchAvailableOffers, setReceiveDetailPost } from "../../slices/foodReceptionReducer";
+import { fetchAvailableOffers, setDetailPost } from "../../slices/foodReceptionReducer";
 import { useDispatch, useSelector } from "react-redux";
 
 let safeMargin;
@@ -16,14 +16,14 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function AvailableOffersScreen({ navigation, route }) {
-    const { availableOffers, getAvailableOffersStatus, getAvailableOffersError } = useSelector(
+    const { availableOffers, getAvailableOffersStatus, getAvailableOffersError, setDetailPostStatus } = useSelector(
         (state) => state.foodReception
     );
     const dispatch = useDispatch();
 
     const onNavigatePostDetail = (doc) => {
-        dispatch(setReceiveDetailPost(doc));
-        navigation.navigate("Post Detail", { initialPost: doc, role: "receive" });
+        dispatch(setDetailPost(doc));
+        navigation.navigate("Post Detail", { role: "receive" });
     }
 
     const formatPosts = (posts) => {

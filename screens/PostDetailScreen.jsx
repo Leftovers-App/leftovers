@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Dimensions, Platform, Text } from "react-native";
 import styled from "styled-components/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { resetReceiveDetailPost } from "../slices/foodReceptionReducer";
 import { AcceptJobButton, CancelClaimButton, CancelJobButton, CancelOfferButton, ClaimOfferButton, ConfirmDeliveryButton, ConfirmPickupButton, DenyJobButton } from "../components/PostActionButtons";
 
 let safeMargin;
@@ -16,113 +17,89 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function PostDetailScreen({ navigation, route }) {
-    const { initialPost, role } = route.params;
-    // const [postActions, setPostActions] = useState([]);
-    let post = null;
-    let newPostActions = [];
+    const { role } = route.params;
+    // const [post, setPost] = useState(null);
+    const dispatch = useDispatch();
 
-    // Handle post that does not have a valid initialPost
-    useEffect(() => {
-        if (!initialPost) {
-            console.log("Initial post not defined at PostDetail. Navigating back.");
-            navigation.goBack();
-        }
-    }, [])
+    /*
+        TODO: pass in post ID as a prop to this component; try setting a snapshot listener for that post, catch errors => navigate back;
+        remove all of the redux stuff with detailPost, etc.
+    */
 
-    useEffect(() => {
-        // let newPostActions = [];
-        switch (role) {
-            case "donate":
-                console.log("donate post detail")
-                // if (post.data.status === "available") {
-                //     newPostActions.push(CancelOfferButton);
-                // }
-                // else if (post.data.status === "assigned") {
-                //     newPostActions.push(ConfirmPickupButton);
-                // }
-                // setPostActions(newPostActions);
-                break;
-            case "receive":
-                console.log("receive post detail")
-                // const { receiveDetailPost } = useSelector((state) => state.foodReception);
-                // post = receiveDetailPost;
-                if (post) {
-                    if (post.data.status === "available") { newPostActions.push(ClaimOfferButton(post.id)); }
-                    else {
-                        if (post.data.status === "claimed") { newPostActions.push(CancelClaimButton); }
-                        else if (post.data.status === "picked up") { newPostActions.push(ConfirmDeliveryButton); }
-                    }
-                    // setPostActions(newPostActions);
-                } else { console.log('no post to action') }
-                break;
-            case "deliver":
-                console.log("deliver post detail")
-                // if (post.data.status === "pending assignment") {
-                //     newPostActions.push(AcceptJobButton);
-                //     newPostActions.push(DenyJobButton);
-                // }
-                // else { if (post.data.status === "assigned") { newPostActions.push(CancelJobButton); } }
-                // setPostActions(newPostActions);
-                break;
-            default:
-                console.log("No valid role. No actions to add.")
-            // navigation.goBack();
-        }
-    }, [post])
+    // useEffect(() => {
+    //     return () => {
+    //         dispatch(resetReceiveDetailPost());
+    //     }
+    // }, [])
 
     // Select post from Redux state
-    // let newPostActions = [];
+    let detailPost = null;
+    let setDetailPostStatus = "not ready";
     switch (role) {
         case "donate":
-            console.log("donate post detail")
-            // if (post.data.status === "available") {
-            //     newPostActions.push(CancelOfferButton);
-            // }
-            // else if (post.data.status === "assigned") {
-            //     newPostActions.push(ConfirmPickupButton);
-            // }
-            // setPostActions(newPostActions);
+            console.log("donate post detail");
             break;
         case "receive":
             console.log("receive post detail")
-            const { receiveDetailPost } = useSelector((state) => state.foodReception);
-            post = receiveDetailPost;
-            if (post) {
-                // if (post.data.status === "available") { newPostActions.push(ClaimOfferButton(post.id)); }
-                // else {
-                //     if (post.data.status === "claimed") { newPostActions.push(CancelClaimButton); }
-                //     else if (post.data.status === "picked up") { newPostActions.push(ConfirmDeliveryButton); }
-                // }
-                // setPostActions(newPostActions);
-                console.log("there's a post")
-            } else { navigation.goBack(); }
+            const { detailPost, setDetailPostStatus } = useSelector((state) => state.foodReception);
+            // setPost(receiveDetailPost);
             break;
         case "deliver":
             console.log("deliver post detail")
-            // if (post.data.status === "pending assignment") {
-            //     newPostActions.push(AcceptJobButton);
-            //     newPostActions.push(DenyJobButton);
-            // }
-            // else { if (post.data.status === "assigned") { newPostActions.push(CancelJobButton); } }
-            // setPostActions(newPostActions);
             break;
         default:
-            console.log("No valid role. Exiting post detail.")
+            console.log("No valid role. No post has been selected.")
             navigation.goBack();
+    }
+
+    const getPostActions = (status, role) => {
+        if (detailPost) {
+            let postActions = [];
+            switch (role) {
+                case "donate":
+                    if (status === "available") { postActions.push(CancelOfferButton); }
+                    else if (status === "assigned") { postActions.push(ConfirmPickupButton); }
+                    break;
+                case "receive":
+                    if (status === "available") { postActions.push(ClaimOfferButton(post.id)); }
+                    else {
+                        if (status === "claimed") { postActions.push(CancelClaimButton); }
+                        else if (status === "picked up") { postActions.push(ConfirmDeliveryButton); }
+                    }
+                    break;
+                case "deliver":
+                    if (status === "pending assignment") {
+                        postActions.push(AcceptJobButton);
+                        postActions.push(DenyJobButton);
+                    }
+                    else { if (status === "assigned") { postActions.push(CancelJobButton); } }
+                    break;
+                default:
+                    console.log("No valid role. Exiting post detail.")
+                    navigation.goBack();
+            }
+            return postActions;
+        }
+        else {
+            console.log("No post present. Exiting post detail.");
+            navigation.goBack();
+        }
     }
 
     return (
         <Container>
-            {(post) ?
-                <>
-                    <Text>Post Detail for: {post.data.description}!</Text>
-                    <Text>Actions:</Text>
-                    <SBRow>
-                        {newPostActions}
-                    </SBRow>
-                </>
-                :
-                <Text>No post available!</Text>
+            {(setDetailPostStatus === "not ready") ?
+                <Text>Post not ready yet</Text>
+                : (detailPost) ?
+                    <>
+                        <Text>Post Detail for: {post.data.description}!</Text>
+                        <Text>Actions:</Text>
+                        <SBRow>
+                            {getPostActions(detailPost.data.status, role)}
+                        </SBRow>
+                    </>
+                    :
+                    <Text>No post available!</Text>
             }
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
