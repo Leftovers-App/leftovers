@@ -16,9 +16,7 @@ let initialState = {
     getAvailableOffersStatus: "idle",
     getReceivedFoodError: null,
     getReceivedFoodStatus: "idle",
-    receivedFood: [],
-    detailPost: null,
-    setDetailPostStatus: "not ready"
+    receivedFood: []
 };
 
 const foodReceptionSlice = createSlice({
@@ -100,14 +98,6 @@ const foodReceptionSlice = createSlice({
         },
         setActiveClaims(state, action) {
             state.activeClaims = action.payload;
-        },
-        setDetailPost(state, action) {
-            state.detailPost = action.payload;
-            state.setDetailPostStatus = "ready";
-        },
-        resetReceiveDetailPost(state) {
-            state.setDetailPostStatus = "not ready";
-            state.detailPost = null;
         }
     },
 });
@@ -191,12 +181,6 @@ const fetchReceivedFood = () => async (dispatch, getState) => {
                     if (status !== "delivered") {
                         activeClaims.push(claim);
                     }
-
-                    if (detailPost !== null) {
-                        if (detailPost.id) {
-                            if (claim.id === detailPost.id) { setDetailPost(claim); }
-                        }
-                    }
                 });
                 dispatch(setActiveClaims(activeClaims));
                 dispatch(getReceivedFoodSuccess(claims));
@@ -214,7 +198,7 @@ export const {
     confirmDeliveryStarted, confirmDeliverySuccess, confirmDeliveryFailed,
     getAvailableOffersStarted, getAvailableOffersSuccess, getAvailableOffersFailed,
     getReceivedFoodStarted, getReceivedFoodSuccess, getReceivedFoodFailed,
-    setActiveClaims, setDetailPost
+    setActiveClaims
 } = actions;
 export { cancelClaim, claimOffer, confirmDelivery, fetchAvailableOffers, fetchReceivedFood };
 export default reducer;

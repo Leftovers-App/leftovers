@@ -4,27 +4,27 @@ import { Button, Text, TouchableOpacity, View } from "react-native";
 import { claimOffer } from "../slices/foodReceptionReducer";
 import { CircleCheckIcon } from "./Icons";
 
-export const AcceptJobButton = () => {
+export const AcceptJobButton = (postId) => {
     return (
-        <Text>Accept Job</Text>
+        <Text key={postId}>Accept Job</Text>
     );
 }
 
-export const CancelClaimButton = () => {
+export const CancelClaimButton = (postId) => {
     return (
-        <Text>Cancel Claim</Text>
+        <Text key={postId}>Cancel Claim</Text>
     );
 }
 
-export const CancelJobButton = () => {
+export const CancelJobButton = (postId) => {
     return (
-        <Text>Cancel Job</Text>
+        <Text key={postId}>Cancel Job</Text>
     );
 }
 
-export const CancelOfferButton = () => {
+export const CancelOfferButton = (postId) => {
     return (
-        <Text>Cancel Offer</Text>
+        <Text key={postId}>Cancel Offer</Text>
     );
 }
 
@@ -47,20 +47,20 @@ export const ClaimOfferButton = (postId) => {
     );
 }
 
-export const ConfirmDeliveryButton = () => {
+export const ConfirmDeliveryButton = (postId) => {
     return (
-        <Text>Confirm Delivery</Text>
+        <Text key={postId}>Confirm Delivery</Text>
     );
 }
 
-export const ConfirmPickupButton = () => {
+export const ConfirmPickupButton = (postId) => {
     return (
-        <Text>Confirm Pickup</Text>
+        <Text key={postId}>Confirm Pickup</Text>
     );
 }
 
-export const DenyJobButton = () => {
+export const DenyJobButton = (postId) => {
     return (
-        <Text>Deny Job</Text>
+        <Text key={postId}>Deny Job</Text>
     );
 }

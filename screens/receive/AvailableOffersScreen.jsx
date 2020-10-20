@@ -21,16 +21,11 @@ export default function AvailableOffersScreen({ navigation, route }) {
     );
     const dispatch = useDispatch();
 
-    const onNavigatePostDetail = (doc) => {
-        dispatch(setDetailPost(doc));
-        navigation.navigate("Post Detail", { role: "receive" });
-    }
-
     const formatPosts = (posts) => {
         let formattedPosts = [];
         posts.forEach(doc => {
             formattedPosts.push(
-                <TouchableOpacity key={doc.id} onPress={() => { onNavigatePostDetail(doc) }}>
+                <TouchableOpacity key={doc.id} onPress={() => { navigation.navigate("Post Detail", { postId: doc.id, role: "receive" }) }}>
                     <SBRow style={{ marginBottom: 25 }}>
                         <Text>{doc.data.description}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>

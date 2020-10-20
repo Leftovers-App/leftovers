@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Dimensions, Platform, Text } from "react-native";
 import styled from "styled-components/native";
-import { useDispatch, useSelector } from "react-redux";
+import { postsRef } from "../services/FirebaseService";
+import { convertTimestamps } from "../services/TimestampUtil";
 import { resetReceiveDetailPost } from "../slices/foodReceptionReducer";
 import { AcceptJobButton, CancelClaimButton, CancelJobButton, CancelOfferButton, ClaimOfferButton, ConfirmDeliveryButton, ConfirmPickupButton, DenyJobButton } from "../components/PostActionButtons";
 
@@ -17,67 +18,59 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function PostDetailScreen({ navigation, route }) {
-    const { role } = route.params;
-    // const [post, setPost] = useState(null);
-    const dispatch = useDispatch();
+    const { postId, role } = route.params;
+    const [detailPost, setDetailPost] = useState(null);
+    const [getDetailPostStatus, setGetDetailPostStatus] = useState("idle");
 
-    /*
-        TODO: pass in post ID as a prop to this component; try setting a snapshot listener for that post, catch errors => navigate back;
-        remove all of the redux stuff with detailPost, etc.
-    */
-
-    // useEffect(() => {
-    //     return () => {
-    //         dispatch(resetReceiveDetailPost());
-    //     }
-    // }, [])
-
-    // Select post from Redux state
-    let detailPost = null;
-    let setDetailPostStatus = "not ready";
-    switch (role) {
-        case "donate":
-            console.log("donate post detail");
-            break;
-        case "receive":
-            console.log("receive post detail")
-            const { detailPost, setDetailPostStatus } = useSelector((state) => state.foodReception);
-            // setPost(receiveDetailPost);
-            break;
-        case "deliver":
-            console.log("deliver post detail")
-            break;
-        default:
-            console.log("No valid role. No post has been selected.")
+    useEffect(() => {
+        try {
+            console.log("Post ID param:", postId)
+            setGetDetailPostStatus("loading");
+            postsRef.doc(postId)
+                .onSnapshot((post) => {
+                    console.log("inside snapshot listener!")
+                    setDetailPost({
+                        id: post.id,
+                        data: convertTimestamps(post.data())
+                    });
+                    setGetDetailPostStatus("complete");
+                    console.log(detailPost);
+                });
+        } catch (err) {
+            setGetDetailPostStatus("failed");
+            console.error(err.toString());
             navigation.goBack();
-    }
+        }
+    }, [])
 
-    const getPostActions = (status, role) => {
+    const getPostActions = (detailPost, role) => {
         if (detailPost) {
+            const status = detailPost.data.status;
             let postActions = [];
             switch (role) {
                 case "donate":
-                    if (status === "available") { postActions.push(CancelOfferButton); }
-                    else if (status === "assigned") { postActions.push(ConfirmPickupButton); }
+                    if (status === "available") { postActions.push(CancelOfferButton(detailPost.id)); }
+                    else if (status === "assigned") { postActions.push(ConfirmPickupButton(detailPost.id)); }
                     break;
                 case "receive":
-                    if (status === "available") { postActions.push(ClaimOfferButton(post.id)); }
+                    if (status === "available") { postActions.push(ClaimOfferButton(detailPost.id)); }
                     else {
-                        if (status === "claimed") { postActions.push(CancelClaimButton); }
-                        else if (status === "picked up") { postActions.push(ConfirmDeliveryButton); }
+                        if (status === "claimed") { postActions.push(CancelClaimButton(detailPost.id)); }
+                        else if (status === "picked up") { postActions.push(ConfirmDeliveryButton(detailPost.id)); }
                     }
                     break;
                 case "deliver":
                     if (status === "pending assignment") {
-                        postActions.push(AcceptJobButton);
-                        postActions.push(DenyJobButton);
+                        postActions.push(AcceptJobButton(detailPost.id));
+                        postActions.push(DenyJobButton(detailPost.id));
                     }
-                    else { if (status === "assigned") { postActions.push(CancelJobButton); } }
+                    else { if (status === "assigned") { postActions.push(CancelJobButton(detailPost.id)); } }
                     break;
                 default:
                     console.log("No valid role. Exiting post detail.")
                     navigation.goBack();
             }
+            console.log("Post Actions:", postActions);
             return postActions;
         }
         else {
@@ -88,21 +81,23 @@ export default function PostDetailScreen({ navigation, route }) {
 
     return (
         <Container>
-            {(setDetailPostStatus === "not ready") ?
-                <Text>Post not ready yet</Text>
-                : (detailPost) ?
-                    <>
-                        <Text>Post Detail for: {post.data.description}!</Text>
-                        <Text>Actions:</Text>
-                        <SBRow>
-                            {getPostActions(detailPost.data.status, role)}
-                        </SBRow>
-                    </>
+            { (getDetailPostStatus == "complete") ?
+                <>
+                    <Text>Post Detail for: {detailPost.data.description}!</Text>
+                    <Text>Actions:</Text>
+                    <SBRow>
+                        <>
+                            {getPostActions(detailPost, role)}
+                        </>
+                    </SBRow>
+                </>
+                : (getDetailPostStatus == "loading") ?
+                    < Text >Loading...</Text>
                     :
-                    <Text>No post available!</Text>
+                    <Text>No post available: {getDetailPostStatus}</Text>
             }
             <Button title="Go Back" onPress={() => navigation.goBack()} />
-        </Container>
+        </Container >
     );
 }
 
