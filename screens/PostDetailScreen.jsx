@@ -21,14 +21,23 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 export default function PostDetailScreen({ navigation, route }) {
     const { postId, role } = route.params;
 
-    const { claimOfferErrors, claimOfferStatuses } = useSelector(
+    // Get all relevant Redux states to pass as props to button components
+    const { cancelJobStatus, seenJobs, currentJob, pendingJob } = useSelector(
+        (state) => state.foodDelivery
+    );
+    const { confirmPickupErrors, confirmPickupStatuses, deleteFoodDonationErrors, deleteFoodDonationStatuses } = useSelector(
+        (state) => state.foodDonation
+    );
+    const { cancelClaimErrors, cancelClaimStatuses, claimOfferErrors, claimOfferStatuses, confirmDeliveryErrors, confirmDeliveryStatuses } = useSelector(
         (state) => state.foodReception
     );
     const dispatch = useDispatch();
 
+    // States local to PostDetailScreen
     const [detailPost, setDetailPost] = useState(null);
     const [getDetailPostStatus, setGetDetailPostStatus] = useState("idle");
 
+    // On load, set snapshot listener for detailPost
     useEffect(() => {
         try {
             console.log("Post ID param:", postId)
@@ -50,20 +59,21 @@ export default function PostDetailScreen({ navigation, route }) {
         }
     }, [])
 
+    // Get post actions based on role and status
     const getPostActions = (detailPost, role) => {
         if (detailPost) {
             const status = detailPost.data.status;
             let postActions = [];
             switch (role) {
                 case "donate":
-                    if (status === "available") { postActions.push(CancelOfferButton(detailPost.id)); }
-                    else if (status === "assigned") { postActions.push(ConfirmPickupButton(detailPost.id)); }
+                    if (status === "available") { postActions.push(CancelOfferButton(detailPost.id, dispatch, deleteFoodDonationErrors, deleteFoodDonationStatuses)); }
+                    else if (status === "assigned") { postActions.push(ConfirmPickupButton(detailPost.id, dispatch, confirmPickupErrors, confirmPickupStatuses)); }
                     break;
                 case "receive":
                     if (status === "available") { postActions.push(ClaimOfferButton(detailPost.id, dispatch, claimOfferErrors, claimOfferStatuses)); }
                     else {
-                        if (status === "claimed") { postActions.push(CancelClaimButton(detailPost.id)); }
-                        else if (status === "picked up") { postActions.push(ConfirmDeliveryButton(detailPost.id)); }
+                        if (status === "claimed") { postActions.push(CancelClaimButton(detailPost.id, dispatch, cancelClaimErrors, cancelClaimStatuses)); }
+                        else if (status === "picked up") { postActions.push(ConfirmDeliveryButton(detailPost.id, dispatch, confirmDeliveryErrors, confirmDeliveryStatuses)); }
                     }
                     break;
                 case "deliver":
@@ -71,7 +81,7 @@ export default function PostDetailScreen({ navigation, route }) {
                         postActions.push(AcceptJobButton(detailPost.id));
                         postActions.push(DenyJobButton(detailPost.id));
                     }
-                    else { if (status === "assigned") { postActions.push(CancelJobButton(detailPost.id)); } }
+                    else { if (status === "assigned") { postActions.push(CancelJobButton(detailPost.id, dispatch, cancelJobStatus, seenJobs, currentJob, pendingJob)); } }
                     break;
                 default:
                     console.log("No valid role. Exiting post detail.")

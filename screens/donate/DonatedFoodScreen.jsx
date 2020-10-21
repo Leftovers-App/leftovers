@@ -17,7 +17,7 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function DonatedFoodScreen({ navigation, route }) {
-    const { confirmPickupStatuses, confirmPickupErrors, deleteFoodDonationStatuses, deleteFoodDonationErrors, foodDonations, getFoodDonationsStatus, getFoodDonationsError } = useSelector(
+    const { foodDonations, getFoodDonationsStatus, getFoodDonationsError } = useSelector(
         (state) => state.foodDonation
     );
     const dispatch = useDispatch();
@@ -31,30 +31,6 @@ export default function DonatedFoodScreen({ navigation, route }) {
                         <Text>{doc.data.description}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
-                            {(doc.data.status === 'available') ?
-                                <>
-                                    {
-                                        (deleteFoodDonationErrors[doc.id]) ?
-                                            <Text style={{ color: 'red' }}>Failed</Text>
-                                            : (deleteFoodDonationStatuses[doc.id] === 'loading') ?
-                                                <Text>Loading</Text>
-                                                :
-                                                <TouchableOpacity onPress={() => { dispatch(cancelFoodDonation(doc.id)); }}><CircleXIcon /></TouchableOpacity>
-                                    }
-                                </>
-                                : (doc.data.status === "assigned") ?
-                                    <>
-                                        {
-                                            (confirmPickupErrors[doc.id]) ?
-                                                <Text style={{ color: 'red' }}>Failed</Text>
-                                                : (confirmPickupStatuses[doc.id] === 'loading') ?
-                                                    <Text>Loading</Text>
-                                                    :
-                                                    <TouchableOpacity onPress={() => { dispatch(confirmPickup(doc.id)); }}><CheckIcon /></TouchableOpacity>
-                                        }
-                                    </>
-                                    : <></>
-                            }
                         </View>
                     </SBRow>
                 </TouchableOpacity>

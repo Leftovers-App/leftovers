@@ -1,29 +1,52 @@
 import * as React from "react";
 import { Button, Text, TouchableOpacity, View } from "react-native";
 import { claimOffer } from "../slices/foodReceptionReducer";
-import { CircleCheckIcon } from "./Icons";
+import { CheckIcon, CheckSquareIcon, CircleCheckIcon, CircleXIcon } from "./Icons";
 
-export const AcceptJobButton = (postId) => {
+export const AcceptJobButton = (postId, dispatch) => {
     return (
-        <Text key={postId}>Accept Job</Text>
+        <React.Fragment key={postId}>
+            <Button title="Accept Job" onPress={() => dispatch(performJobAction(true))} />
+        </React.Fragment>
     );
 }
 
-export const CancelClaimButton = (postId) => {
+export const CancelClaimButton = (postId, dispatch, cancelClaimErrors, cancelClaimStatuses) => {
     return (
-        <Text key={postId}>Cancel Claim</Text>
+        <React.Fragment key={postId}>
+            {(cancelClaimErrors[postId]) ?
+                <Text style={{ color: 'red' }}>Failed</Text>
+                : (cancelClaimStatuses[postId] === 'loading') ?
+                    <Text>Loading</Text>
+                    : <TouchableOpacity onPress={() => { dispatch(cancelClaim(postId)); }}><CircleXIcon /></TouchableOpacity>
+            }
+        </React.Fragment>
     );
 }
 
-export const CancelJobButton = (postId) => {
+export const CancelJobButton = (postId, dispatch, cancelJobStatus, seenJobs, currentJob, pendingJob) => {
     return (
-        <Text key={postId}>Cancel Job</Text>
+        <React.Fragment key={postId}>
+            {(cancelJobStatus === "loading") ?
+                <Text>Canceling job...</Text>
+                :
+                <Button title="Cancel Job" onPress={() => dispatch(cancelJob(postId, seenJobs, currentJob, pendingJob))} />
+            }
+        </React.Fragment>
     );
 }
 
-export const CancelOfferButton = (postId) => {
+export const CancelOfferButton = (postId, dispatch, deleteFoodDonationErrors, deleteFoodDonationStatuses) => {
     return (
-        <Text key={postId}>Cancel Offer</Text>
+        <React.Fragment key={postId}>
+            {(deleteFoodDonationErrors[postId]) ?
+                <Text style={{ color: 'red' }}>Failed</Text>
+                : (deleteFoodDonationStatuses[postId] === 'loading') ?
+                    <Text>Loading</Text>
+                    :
+                    <TouchableOpacity onPress={() => { dispatch(cancelFoodDonation(postId)); }}><CircleXIcon /></TouchableOpacity>
+            }
+        </React.Fragment>
     );
 }
 
@@ -42,20 +65,38 @@ export const ClaimOfferButton = (postId, dispatch, claimOfferErrors, claimOfferS
     );
 }
 
-export const ConfirmDeliveryButton = (postId) => {
+export const ConfirmDeliveryButton = (postId, dispatch) => {
     return (
-        <Text key={postId}>Confirm Delivery</Text>
+        <React.Fragment key={postId}>
+            {(confirmDeliveryErrors[doc.id]) ?
+                <Text style={{ color: 'red' }}>Failed</Text>
+                : (confirmDeliveryStatuses[doc.id] === 'loading') ?
+                    <Text>Loading</Text>
+                    :
+                    <TouchableOpacity onPress={() => { dispatch(confirmDelivery(doc.id)); }}><CheckSquareIcon /></TouchableOpacity>
+            }
+        </React.Fragment>
     );
 }
 
-export const ConfirmPickupButton = (postId) => {
+export const ConfirmPickupButton = (postId, dispatch, confirmPickupErrors, confirmPickupStatuses) => {
     return (
-        <Text key={postId}>Confirm Pickup</Text>
+        <React.Fragment key={postId}>
+            {(confirmPickupErrors[postId]) ?
+                <Text style={{ color: 'red' }}>Failed</Text>
+                : (confirmPickupStatuses[postId] === 'loading') ?
+                    <Text>Loading</Text>
+                    :
+                    <TouchableOpacity onPress={() => { dispatch(confirmPickup(postId)); }}><CheckIcon /></TouchableOpacity>
+            }
+        </React.Fragment>
     );
 }
 
-export const DenyJobButton = (postId) => {
+export const DenyJobButton = (postId, dispatch) => {
     return (
-        <Text key={postId}>Deny Job</Text>
+        <React.Fragment key={postId}>
+            <Button title="Decline Job" onPress={() => dispatch(performJobAction(false))} />
+        </React.Fragment>
     );
 }

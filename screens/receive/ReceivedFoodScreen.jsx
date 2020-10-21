@@ -17,7 +17,7 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function ReceivedFoodScreen({ navigation, route }) {
-    const { cancelClaimErrors, cancelClaimStatuses, confirmDeliveryStatuses, confirmDeliveryErrors, getReceivedFoodError, getReceivedFoodStatus, receivedFood } = useSelector(
+    const { getReceivedFoodError, getReceivedFoodStatus, receivedFood } = useSelector(
         (state) => state.foodReception
     );
     const dispatch = useDispatch();
@@ -31,25 +31,6 @@ export default function ReceivedFoodScreen({ navigation, route }) {
                         <Text>{doc.data.description}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
-                            {
-                                (cancelClaimErrors[doc.id]) ?
-                                    <Text style={{ color: 'red' }}>Failed</Text>
-                                    : (cancelClaimStatuses[doc.id] === 'loading') ?
-                                        <Text>Loading</Text>
-                                        : (doc.data.status === "claimed") ?
-                                            <TouchableOpacity onPress={() => { dispatch(cancelClaim(doc.id)); }}><CircleXIcon /></TouchableOpacity>
-                                            : (doc.data.status === "picked up") ?
-                                                <>
-                                                    {(confirmDeliveryErrors[doc.id]) ?
-                                                        <Text style={{ color: 'red' }}>Failed</Text>
-                                                        : (confirmDeliveryStatuses[doc.id] === 'loading') ?
-                                                            <Text>Loading</Text>
-                                                            :
-                                                            <TouchableOpacity onPress={() => { dispatch(confirmDelivery(doc.id)); }}><CheckSquareIcon /></TouchableOpacity>
-                                                    }
-                                                </>
-                                                : <></>
-                            }
                         </View>
                     </SBRow>
                 </TouchableOpacity>
