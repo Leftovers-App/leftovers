@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Button, Text, TouchableOpacity, View } from "react-native";
 import { claimOffer } from "../slices/foodReceptionReducer";
 import { CircleCheckIcon } from "./Icons";
@@ -28,11 +27,7 @@ export const CancelOfferButton = (postId) => {
     );
 }
 
-export const ClaimOfferButton = (postId) => {
-    const { claimOfferErrors, claimOfferStatuses } = useSelector(
-        (state) => state.foodReception
-    );
-    const dispatch = useDispatch();
+export const ClaimOfferButton = (postId, dispatch, claimOfferErrors, claimOfferStatuses) => {
 
     return (
         <React.Fragment key={postId}>

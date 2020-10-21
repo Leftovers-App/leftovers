@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Dimensions, Platform, Text } from "react-native";
 import styled from "styled-components/native";
+import { useDispatch, useSelector } from "react-redux";
 import { postsRef } from "../services/FirebaseService";
 import { convertTimestamps } from "../services/TimestampUtil";
 import { resetReceiveDetailPost } from "../slices/foodReceptionReducer";
@@ -19,6 +20,12 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default function PostDetailScreen({ navigation, route }) {
     const { postId, role } = route.params;
+
+    const { claimOfferErrors, claimOfferStatuses } = useSelector(
+        (state) => state.foodReception
+    );
+    const dispatch = useDispatch();
+
     const [detailPost, setDetailPost] = useState(null);
     const [getDetailPostStatus, setGetDetailPostStatus] = useState("idle");
 
@@ -53,7 +60,7 @@ export default function PostDetailScreen({ navigation, route }) {
                     else if (status === "assigned") { postActions.push(ConfirmPickupButton(detailPost.id)); }
                     break;
                 case "receive":
-                    if (status === "available") { postActions.push(ClaimOfferButton(detailPost.id)); }
+                    if (status === "available") { postActions.push(ClaimOfferButton(detailPost.id, dispatch, claimOfferErrors, claimOfferStatuses)); }
                     else {
                         if (status === "claimed") { postActions.push(CancelClaimButton(detailPost.id)); }
                         else if (status === "picked up") { postActions.push(ConfirmDeliveryButton(detailPost.id)); }
