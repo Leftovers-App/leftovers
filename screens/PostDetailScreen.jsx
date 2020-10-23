@@ -102,6 +102,7 @@ export default function PostDetailScreen({ navigation, route }) {
             { ((detailPost) && ("data" in detailPost) && (detailPost.data) && ("description" in detailPost.data) && (getDetailPostStatus == "complete")) ?
                 <>
                     <Text>Post Detail for: {detailPost.data.description}!</Text>
+                    <Text>Status: {detailPost.data.status}!</Text>
                     <Text>Actions:</Text>
                     <SBRow>
                         <>
