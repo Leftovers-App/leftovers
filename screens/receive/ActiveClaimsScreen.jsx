@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Alert, Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import * as React from "react";
+import { Button, Dimensions, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { cancelFoodDonation, confirmPickup } from "../../slices/foodDonationReducer";
+import * as firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { CheckIcon, CircleXIcon } from "../../components/Icons";
+import PostDetailScreen from "../PostDetailScreen";
 
 let safeMargin;
 
@@ -16,17 +16,16 @@ if (Platform.OS == "ios") {
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
-export default function DonatedFoodScreen({ navigation, route }) {
-    const { foodDonations, getFoodDonationsStatus, getFoodDonationsError } = useSelector(
-        (state) => state.foodDonation
+export default function ActiveClaimsScreen({ navigation, route }) {
+    const { activeClaims, getAvailableOffersStatus, getAvailableOffersError } = useSelector(
+        (state) => state.foodReception
     );
-    const dispatch = useDispatch();
 
     const formatPosts = (posts) => {
         let formattedPosts = [];
         posts.forEach(doc => {
             formattedPosts.push(
-                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail", { postId: doc.id, role: "donate" })}>
+                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail", { postId: doc.id, role: "receive" })}>
                     <SBRow style={{ marginBottom: 25 }}>
                         <Text>{doc.data.description}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -38,27 +37,27 @@ export default function DonatedFoodScreen({ navigation, route }) {
         })
         return formattedPosts;
     }
-
     return (
         <Container>
             <SBRow>
-                <Text>Your food donations:</Text>
+                <Text>Your active claims:</Text>
             </SBRow>
             <View style={{ height: screenHeight * .5 }}>
                 <ScrollView>
-                    {(getFoodDonationsError) ?
-                        <Text style={{ color: 'red' }}>{getFoodDonationsError}</Text>
-                        : (getFoodDonationsStatus === 'loading') ?
-                            <Text>Loading donations...</Text>
-                            : (foodDonations.length > 0) ?
+                    {(getAvailableOffersError) ?
+                        <Text style={{ color: 'red' }}>{getAvailableOffersError}</Text>
+                        : (getAvailableOffersStatus === 'loading') ?
+                            <Text>Loading claims...</Text>
+                            : (activeClaims.length > 0) ?
                                 <>
-                                    {formatPosts(foodDonations)}
+                                    {formatPosts(activeClaims)}
                                 </>
                                 :
-                                <Text>No existing donations!</Text>
+                                <Text>No active claims!</Text>
                     }
                 </ScrollView>
             </View>
+            <Button title="Available Offers" onPress={() => navigation.navigate("Available Offers")} />
         </Container>
     );
 }

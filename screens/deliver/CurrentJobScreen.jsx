@@ -1,9 +1,6 @@
 import * as React from "react";
 import { Button, Platform, Text } from "react-native";
 import styled from "styled-components/native";
-import * as firebase from "firebase";
-import { useDispatch, useSelector } from "react-redux";
-import { Welcome } from "../components/Welcome";
 
 let safeMargin;
 
@@ -13,19 +10,11 @@ if (Platform.OS == "ios") {
     safeMargin = 0;
 }
 
-export default function ProfileScreen({ navigation, route }) {
-    const { email } = useSelector(
-        (state) => state.auth
-    );
-
-    const onLogoutPress = () => {
-        firebase.auth().signOut();
-    };
+export default function CurrentJobScreen({ navigation, route }) {
 
     return (
         <Container>
-            <Welcome email={email} />
-            <Button title="Logout" onPress={() => onLogoutPress()} />
+            <Text>Current Job Screen</Text>
             <Button title="Go Back" onPress={() => navigation.goBack()} />
         </Container>
     );

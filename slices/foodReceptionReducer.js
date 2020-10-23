@@ -115,7 +115,7 @@ const cancelClaim = (postId) => async dispatch => {
     }
 }
 
-const claimOffer = (postId, email) => async (dispatch, getState) => {
+const claimOffer = (postId) => async (dispatch, getState) => {
     const { email } = getState().auth;
     dispatch(claimOfferStarted(postId));
     try {
@@ -162,6 +162,7 @@ const fetchAvailableOffers = () => async dispatch => {
 
 const fetchReceivedFood = () => async (dispatch, getState) => {
     const { email } = getState().auth;
+    const { detailPost } = getState().foodReception;
     dispatch(getReceivedFoodStarted());
     try {
         postsRef.where("foodRecipient", "==", email)

@@ -4,6 +4,7 @@ import styled from "styled-components/native";
 import { useDispatch, useSelector } from "react-redux";
 import { cancelJob, cancelJobAcceptError, fetchAvailableJobs, performJobAction, setPendingJob } from "../../slices/foodDeliveryReducer";
 import { declineJob } from "../../services/FirebaseService";
+import { AcceptJobButton, CancelJobButton, DenyJobButton } from "../../components/PostActionButtons";
 
 let safeMargin;
 
@@ -35,11 +36,7 @@ export default function JobAssignmentScreen({ navigation, route }) {
                     <Text>Donor: {currentJob.data.foodDonor}</Text>
                     <Text>Recipient: {currentJob.data.foodRecipient}</Text>
                     <Text>Description: {currentJob.data.description}</Text>
-                    {(cancelJobStatus === "loading") ?
-                        <Text>Canceling job...</Text>
-                        :
-                        <Button title="Cancel Job" onPress={() => dispatch(cancelJob(currentJob.id, seenJobs, currentJob, pendingJob))} />
-                    }
+                    {CancelJobButton(currentJob.id, dispatch, cancelJobStatus, seenJobs, currentJob, pendingJob)}
                 </>
                 : (getAvailableJobsError) ?
                     <Text style={{ color: 'red' }}>{getAvailableJobsError}</Text>
@@ -56,8 +53,8 @@ export default function JobAssignmentScreen({ navigation, route }) {
                                         <Text>Recipient: {pendingJob.data.foodRecipient}</Text>
                                         <Text>Description: {pendingJob.data.description}</Text>
                                         <View style={{ width: screenWidth * .8, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                                            <Button title="Accept" onPress={() => dispatch(performJobAction(true))} />
-                                            <Button title="Decline" onPress={() => dispatch(performJobAction(false))} />
+                                            {AcceptJobButton(pendingJob.id, dispatch)}
+                                            {DenyJobButton(pendingJob.id, dispatch)}
                                         </View>
                                     </>
                                     :

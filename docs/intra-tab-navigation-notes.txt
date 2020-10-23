@@ -1,0 +1,39 @@
+Donation
+_________________
+
+Tab 1:
+NewOfferScreen
+ActiveDonationsScreen
+PostDetailScreen
+
+Tab 2:
+DonatedFoodScreen
+PostDetailScreen
+
+_________________
+
+Reception
+_________________
+
+Tab 1:
+AvailableOffersScreen
+ActiveClaimsScreen
+PostDetailScreen
+
+Tab 2:
+ReceivedFoodScreen
+PostDetailScreen
+
+_________________
+
+Delivery
+_________________
+
+Tab 1:
+JobAssignmentScreen
+ActiveJobScreen
+PostDetailScreen (on job complete?)
+
+Tab 2:
+FoodDeliveredScreen
+PostDetailScreen

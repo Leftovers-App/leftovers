@@ -24,12 +24,14 @@ export default function FoodDeliveredScreen({ navigation, route }) {
         let formattedPosts = [];
         posts.forEach(doc => {
             formattedPosts.push(
-                <SBRow key={doc.id} style={{ marginBottom: 25 }}>
-                    <Text>{doc.data.description}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
-                    </View>
-                </SBRow>
+                <TouchableOpacity key={doc.id} onPress={() => navigation.navigate("Post Detail", { postId: doc.id, role: "deliver" })}>
+                    <SBRow style={{ marginBottom: 25 }}>
+                        <Text>{doc.data.description}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text style={{ marginRight: 25 }}>{doc.data.status}</Text>
+                        </View>
+                    </SBRow>
+                </TouchableOpacity>
             )
         })
         return formattedPosts;
