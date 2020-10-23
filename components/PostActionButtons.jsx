@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Button, Text, TouchableOpacity, View } from "react-native";
-import { claimOffer } from "../slices/foodReceptionReducer";
+import { cancelJob, performJobAction } from "../slices/foodDeliveryReducer";
+import { cancelFoodDonation, confirmPickup } from "../slices/foodDonationReducer";
+import { cancelClaim, claimOffer, confirmDelivery } from "../slices/foodReceptionReducer";
 import { CheckIcon, CheckSquareIcon, CircleCheckIcon, CircleXIcon } from "./Icons";
 
 export const AcceptJobButton = (postId, dispatch) => {
@@ -65,15 +67,15 @@ export const ClaimOfferButton = (postId, dispatch, claimOfferErrors, claimOfferS
     );
 }
 
-export const ConfirmDeliveryButton = (postId, dispatch) => {
+export const ConfirmDeliveryButton = (postId, dispatch, confirmDeliveryErrors, confirmDeliveryStatuses) => {
     return (
         <React.Fragment key={postId}>
-            {(confirmDeliveryErrors[doc.id]) ?
+            {(confirmDeliveryErrors[postId]) ?
                 <Text style={{ color: 'red' }}>Failed</Text>
-                : (confirmDeliveryStatuses[doc.id] === 'loading') ?
+                : (confirmDeliveryStatuses[postId] === 'loading') ?
                     <Text>Loading</Text>
                     :
-                    <TouchableOpacity onPress={() => { dispatch(confirmDelivery(doc.id)); }}><CheckSquareIcon /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => { dispatch(confirmDelivery(postId)); }}><CheckSquareIcon /></TouchableOpacity>
             }
         </React.Fragment>
     );

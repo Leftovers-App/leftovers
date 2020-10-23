@@ -4,7 +4,6 @@ import styled from "styled-components/native";
 import { useDispatch, useSelector } from "react-redux";
 import { postsRef } from "../services/FirebaseService";
 import { convertTimestamps } from "../services/TimestampUtil";
-import { resetReceiveDetailPost } from "../slices/foodReceptionReducer";
 import { AcceptJobButton, CancelClaimButton, CancelJobButton, CancelOfferButton, ClaimOfferButton, ConfirmDeliveryButton, ConfirmPickupButton, DenyJobButton } from "../components/PostActionButtons";
 
 let safeMargin;
@@ -44,13 +43,15 @@ export default function PostDetailScreen({ navigation, route }) {
             setGetDetailPostStatus("loading");
             postsRef.doc(postId)
                 .onSnapshot((post) => {
-                    console.log("inside snapshot listener!")
+                    if (!post.data()) {
+                        navigation.goBack();
+                        return;
+                    }
                     setDetailPost({
                         id: post.id,
                         data: convertTimestamps(post.data())
                     });
                     setGetDetailPostStatus("complete");
-                    console.log(detailPost);
                 });
         } catch (err) {
             setGetDetailPostStatus("failed");
@@ -87,7 +88,7 @@ export default function PostDetailScreen({ navigation, route }) {
                     console.log("No valid role. Exiting post detail.")
                     navigation.goBack();
             }
-            console.log("Post Actions:", postActions);
+            // console.log("Post Actions:", postActions);
             return postActions;
         }
         else {
@@ -98,7 +99,7 @@ export default function PostDetailScreen({ navigation, route }) {
 
     return (
         <Container>
-            { (getDetailPostStatus == "complete") ?
+            { ((detailPost) && ("data" in detailPost) && (detailPost.data) && ("description" in detailPost.data) && (getDetailPostStatus == "complete")) ?
                 <>
                     <Text>Post Detail for: {detailPost.data.description}!</Text>
                     <Text>Actions:</Text>
