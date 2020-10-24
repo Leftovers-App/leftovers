@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Dimensions, Platform, Text } from "react-native";
+import { Button, Dimensions, Platform, Text, View } from "react-native";
 import styled from "styled-components/native";
 import { useDispatch, useSelector } from "react-redux";
 import { postsRef } from "../services/FirebaseService";
@@ -88,6 +88,7 @@ export default function PostDetailScreen({ navigation, route }) {
                     console.log("No valid role. Exiting post detail.")
                     navigation.goBack();
             }
+            if (postActions.length < 1) { postActions.push(<Text>No actions available</Text>) }
             // console.log("Post Actions:", postActions);
             return postActions;
         }
@@ -101,9 +102,21 @@ export default function PostDetailScreen({ navigation, route }) {
         <Container>
             { ((detailPost) && ("data" in detailPost) && (detailPost.data) && ("description" in detailPost.data) && (getDetailPostStatus == "complete")) ?
                 <>
-                    <Text>Post Detail for: {detailPost.data.description}!</Text>
-                    <Text>Status: {detailPost.data.status}!</Text>
-                    <Text>Actions:</Text>
+                    <Text style={{ fontWeight: "bold" }}>{detailPost.data.description}</Text>
+                    <Text>Status: {detailPost.data.status}</Text>
+                    <Text>Donor: {detailPost.data.foodDonor}</Text>
+                    {(detailPost.data.foodRecipient) ? <Text>Recipient: {detailPost.data.foodRecipient}</Text> : <></>}
+                    {(detailPost.data.transporter) ? <Text>Transporter: {detailPost.data.transporter}</Text> : <></>}
+
+                    <View style={{ paddingTop: 10 }}>
+                        {(detailPost.data.created) ? <Text>Created at {detailPost.data.created}</Text> : <></>}
+                        {(detailPost.data.claimed) ? <Text>Claimed at {detailPost.data.claimed}</Text> : <></>}
+                        {(detailPost.data.assigned) ? <Text>Assigned up at {detailPost.data.assigned}</Text> : <></>}
+                        {(detailPost.data.pickedUp) ? <Text>Picked up at {detailPost.data.pickedUp}</Text> : <></>}
+                        {(detailPost.data.delivered) ? <Text>Delivered at {detailPost.data.delivered}</Text> : <></>}
+                    </View>
+
+                    <Text style={{ paddingTop: 10 }}>Actions:</Text>
                     <SBRow>
                         <>
                             {getPostActions(detailPost, role)}
